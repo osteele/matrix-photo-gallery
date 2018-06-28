@@ -1,0 +1,24 @@
+{
+    "name": "matrix-photo-gallery",
+    "description": "Matrix photo gallery",
+    "version": "0.0.1",
+    "author": "Oliver Steele <steele@osteele.com>",
+    "license": "MIT",
+    "scripts": {
+        "start": "poi --env.API_SERVER_URL \"$DEV_API_SERVER_URL\""
+    },
+    "devDependencies": {
+        "poi": "^10.2.9"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "jquery": "^3.3.1",
+        "react": "^16.4.1",
+        "react-dom": "^16.4.1",
+        "react-redux": "^5.0.7",
+        "react-router-redux": "^4.0.8",
+        "redux": "^4.0.0",
+        "redux-thunk": "^2.3.0",
+        "semantic-ui-css": "^2.3.2"
+    }
+}

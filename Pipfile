@@ -15,5 +15,6 @@ flask-restplus = "*"
 matrix_client = "*"
 mongoengine = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
