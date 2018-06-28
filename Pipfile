@@ -8,8 +8,9 @@ python_full_version = "3.6.5"
 
 [scripts]
 server = "env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000"
-deploy = "git push heroku master"
+deploy = "git push heroku +master"
 populate = "env FLASK_APP=back:app FLASK_ENV=development flask read-events"
+update-server = "heroku run flask read-events --count 200"
 
 [packages]
 Flask = "*"

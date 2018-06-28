@@ -12,17 +12,19 @@ MATRIX_PASSWORD = os.environ['MATRIX_PASSWORD']
 MATRIX_HOST = os.environ.get('MATRIX_HOST', "https://matrix.org")
 MATRIX_ROOM_IDS = os.environ['MATRIX_ROOM_IDS'].split(',')
 
-client = None
+
+_matrix_client = None
 
 
-def get_client():
-    global client
-    if client:
-        return client
+def matrix_client():
+    global _matrix_client
+    if _matrix_client:
+        return _matrix_client
     print(f"Signing into {MATRIX_HOST}")
     client = MatrixClient(MATRIX_HOST)
     client.login_with_password(username=MATRIX_USER,
                                password=MATRIX_PASSWORD)
+    _matrix_client = client
     return client
 
 
@@ -32,7 +34,7 @@ def event_is_image(event):
 
 
 def get_room_events(room_id, count=100):
-    room = get_client().get_rooms()[room_id]
+    room = matrix_client().get_rooms()[room_id]
     print(f"Reading events from room {room.display_name}…")
     room.event_history_limit = 100000
     n = len(room.events)
@@ -66,10 +68,10 @@ def save_new_image_events(events):
             'room_id': event['room_id'],
             'sender': event['sender'],
             'timestamp': datetime.fromtimestamp(event['origin_server_ts'] / 1000),
-            'image_url': client.api.get_download_url(content['url']),
+            'image_url': matrix_client().api.get_download_url(content['url']),
         }
         if 'thumbnail_url' in content['info']:
-            fields['thumbnail_url'] = client.api.get_download_url(
+            fields['thumbnail_url'] = matrix_client().api.get_download_url(
                 content['info']['thumbnail_url'])
         image = Image(**fields)
         image.save()
@@ -80,7 +82,7 @@ def import_events_images(room_id, count=100):
 
 
 @app.cli.command(name='read-events')
-@click.argument('count', type=int, default=1000)
+@click.option('--count', type=int, default=1000)
 def import_events(count=300):
     """Load events."""
     for room_id in MATRIX_ROOM_IDS:
