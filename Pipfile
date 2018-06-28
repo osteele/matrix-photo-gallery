@@ -14,5 +14,6 @@ Flask = "*"
 flask-restplus = "*"
 matrix_client = "*"
 mongoengine = "*"
+gunicorn = "*"
 
 [dev-packages]
