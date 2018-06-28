@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
-
 const sortFunction = sortOrder => {
     switch (sortOrder) {
         case 'date-asc':
-            return ({ timestamp }) => timestamp;
+            return ({ timestamp }) => timestamp.valueOf();
         case 'date-desc':
-            return ({ timestamp }) => -timestamp;
+            return ({ timestamp }) => -timestamp.valueOf();
         case 'sender':
             return ({ sender }) => sender;
     }
@@ -38,7 +37,7 @@ const ImageCard = ({ image, imageSize }) => (
             </LazyLoad>
         </div>
         <div className="content">
-            <div className="meta">Posted {Date(image.timestamp)}</div>
+            <div className="meta">Posted {image.timestamp.format('ddd, MMM Do, h:mm A')}</div>
             <div className="meta">By {image.sender}</div>
         </div>
     </div>
