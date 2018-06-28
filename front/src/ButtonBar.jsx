@@ -34,10 +34,17 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
             </button>
             <button
                 className="ui button"
-                title="Sort by Sender"
+                title="Group by Sender"
                 onClick={() => setSortOrder('sender')}
             >
-                <i className="sort alphabet up icon" />
+                <i className="address card outline icon" />
+            </button>
+            <button
+                className="ui button"
+                title="Group by Hour"
+                onClick={() => setSortOrder('hour')}
+            >
+                <i className="clock outline icon" />
             </button>
         </div>
     </div>
