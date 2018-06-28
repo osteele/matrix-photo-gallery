@@ -4,10 +4,13 @@ export const ActionTypes = {
     SET_SORT_ORDER: 'SET_SORT_ORDER'
 };
 
-const decodeEvent = event =>
-    _.merge({}, event, {
-        timestamp: Date.parse(event.timestamp.replace(/\..+/, ''))
-    });
+const decodeImage = event => {
+    return {
+        ...event,
+        timestamp: Date.parse(event.timestamp.replace(/\..+/, '')),
+        sender: event.sender.replace(/@(.+):matrix.org/, '$1')
+    };
+};
 
 export const getEvents = () => (dispatch, getStore) =>
     getStore()
@@ -15,7 +18,7 @@ export const getEvents = () => (dispatch, getStore) =>
         .then(({ data }) =>
             dispatch({
                 type: ActionTypes.SET_IMAGES,
-                data: data.map(decodeEvent)
+                data: data.map(decodeImage)
             })
         );
 
