@@ -3,7 +3,7 @@ import { setImageSize, setSortOrder } from './data/actions';
 
 const ButtonBar = ({ setImageSize, setSortOrder }) => (
     <div>
-        <div className="ui icon buttons">
+        <div className="ui icon buttons" style={{ display: 'none' }}>
             <button className="ui button" onClick={() => setImageSize('tiny')}>
                 <i className="small square icon" />
             </button>

@@ -2,15 +2,12 @@ import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
 
-const IMAGE_LIMIT = 100;
-
 const sortFunction = sortOrder => {
     switch (sortOrder) {
         case 'date-asc':
             return ({ timestamp }) => timestamp;
         case 'date-desc':
-            return ({ timestamp }) =>
-                -Date.parse(timestamp.replace(/\..+/, ''));
+            return ({ timestamp }) => -timestamp;
         case 'sender':
             return ({ sender }) => sender;
     }
@@ -23,17 +20,26 @@ const mapStateToProps = state => ({
 });
 
 const ImageGrid = ({ images, imageSize, sortOrder }) => (
-    <div>
-        {_.sortBy(images, sortFunction(sortOrder))
-            .slice(0, IMAGE_LIMIT)
-            .map(image => (
-                <LazyLoad key={image.event_id}>
-                    <img
-                        className={'ui left floated image ' + imageSize}
-                        src={image.thumbnail_url || image.image_url}
-                    />
-                </LazyLoad>
-            ))}
+    <div className="ui four stackable cards">
+        {_.sortBy(images, sortFunction(sortOrder)).map(image => (
+            <LazyLoad key={image.event_id}>
+                <div className="ui card">
+                    <div className="image">
+                        <img
+                            className={'ui image ' + imageSize}
+                            src={image.thumbnail_url || image.image_url}
+                        />
+                    </div>
+                    <div className="content">
+                        <div className="meta">
+                            <span className="date">
+                                Posted {Date(image.timestamp)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </LazyLoad>
+        ))}
     </div>
 );
 
