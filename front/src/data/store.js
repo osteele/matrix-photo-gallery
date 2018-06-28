@@ -8,7 +8,9 @@ const debug = true;
 export default function setupStore(apiClient) {
     const initialState = {
         apiClient,
-        images: []
+        images: [],
+        imageSize: 'small',
+        sortOrder: 'date-desc'
     };
 
     const middleware =
