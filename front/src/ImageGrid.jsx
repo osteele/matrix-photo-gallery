@@ -22,23 +22,22 @@ const mapStateToProps = state => ({
 const ImageGrid = ({ images, imageSize, sortOrder }) => (
     <div className="ui four stackable cards">
         {_.sortBy(images, sortFunction(sortOrder)).map(image => (
-            <LazyLoad key={image.event_id}>
-                <div className="ui card">
-                    <div className="image">
+            <div key={image.event_id} className="ui card">
+                <div className="image">
+                    <LazyLoad key={image.event_id}>
                         <img
                             className={'ui image ' + imageSize}
                             src={image.thumbnail_url || image.image_url}
                         />
-                    </div>
-                    <div className="content">
-                        <div className="meta">
-                            <span className="date">
-                                Posted {Date(image.timestamp)}
-                            </span>
-                        </div>
+                    </LazyLoad>
+                </div>
+                <div className="content">
+                    <div className="meta">Posted {Date(image.timestamp)}</div>
+                    <div className="meta">
+                        By {image.sender.replace(/@(.+):matrix.org/, '$1')}
                     </div>
                 </div>
-            </LazyLoad>
+            </div>
         ))}
     </div>
 );
