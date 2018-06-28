@@ -5,7 +5,9 @@
     "author": "Oliver Steele <steele@osteele.com>",
     "license": "MIT",
     "scripts": {
-        "start": "poi --env.API_SERVER_URL \"$DEV_API_SERVER_URL\""
+        "build": "env API_SERVER_URL=\"$PROD_API_SERVER_URL\" poi build",
+        "deploy": "yarn build && netlify deploy",
+        "start": "env API_SERVER_URL=\"$API_SERVER_URL\" poi"
     },
     "devDependencies": {
         "poi": "^10.2.9"
