@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 
+import click
 from matrix_client.client import MatrixClient
 
 from .app import app
@@ -18,6 +19,7 @@ def get_client():
     global client
     if client:
         return client
+    print(f"Signing into {MATRIX_HOST}")
     client = MatrixClient(MATRIX_HOST)
     client.login_with_password(username=MATRIX_USER,
                                password=MATRIX_PASSWORD)
@@ -29,33 +31,34 @@ def event_is_image(event):
             event['content'].get('msgtype') == 'm.image')
 
 
-def get_room_events(room_id):
+def get_room_events(room_id, count=100):
     room = get_client().get_rooms()[room_id]
-    print(f"Reading events from {room.display_name}…")
+    print(f"Reading events from room {room.display_name}…")
     room.event_history_limit = 100000
-    count = len(room.events)
-    while len(room.events) < 5000:
+    n = len(room.events)
+    while len(room.events) < count:
         room.backfill_previous_messages(limit=1000)
         if len(room.events) == count:
             break
-        count = len(room.events)
-        print(f"\t{count} events read…")
+        n = len(room.events)
+        print(f"\t{n} events read…")
     print("  done.")
     return room.events
 
 
-def get_room_image_events(room_id):
-    return [event for event in get_room_events(room_id)
+def get_room_image_events(room_id, count=100):
+    return [event for event in get_room_events(room_id, count)
             if event_is_image(event)]
 
 
 def save_new_image_events(events):
+    print(f"Saving {len(events)} event images")
     len1 = len(events)
     events = [event for event in events
               if not Image.objects(event_id=event['event_id'],
                                    room_id=event['room_id'])]
-    print(f"Skipping {len1 - len(events)} images that were already saved")
-    print(f"Saving {len(events)} images")
+    print(f"Skipping {len1 - len(events)} event images that were already saved")
+    print(f"Saving {len(events)} event images")
     for event in events:
         content = event['content']
         fields = {
@@ -72,15 +75,17 @@ def save_new_image_events(events):
         image.save()
 
 
-def import_events_images(room_id):
-    save_new_image_events(get_room_image_events(room_id))
+def import_events_images(room_id, count=100):
+    save_new_image_events(get_room_image_events(room_id, count))
 
 
-@app.cli.command()
-def import_events():
-    """Load events"""
+@app.cli.command(name='read-events')
+@click.argument('count', type=int, default=1000)
+def import_events(count=300):
+    """Load events."""
     for room_id in MATRIX_ROOM_IDS:
-        import_events_images(room_id)
+        import_events_images(room_id, count=count)
+    print(f"The database now has {Image.objects.count()} images")
 
 
 if __name__ == '__main__':
