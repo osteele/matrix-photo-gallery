@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 const sortFunction = sortOrder => {
     switch (sortOrder) {
         case 'date-asc':
+        case 'hour':
             return ({ timestamp }) => timestamp.valueOf();
         case 'date-desc':
             return ({ timestamp }) => -timestamp.valueOf();
@@ -14,6 +15,18 @@ const sortFunction = sortOrder => {
 
 const imageGroups = (images, sortOrder) => {
     switch (sortOrder) {
+        case 'hour': {
+            const hours = { morning: 6, afternoon: 12, evening: 18, night: 24 };
+            return Object.keys(hours).map(title => ({
+                title,
+                images: images.filter(
+                    image =>
+                        Math.floor(image.timestamp.hour() / 6) * 6 ===
+                        hours[title]
+                )
+            }));
+            return [{ images }];
+        }
         case 'sender': {
             const senders = [...new Set(_.map(images, 'sender'))].sort();
             return senders.map(sender => ({
@@ -37,30 +50,52 @@ const ImageCard = ({ image, imageSize }) => (
             </LazyLoad>
         </div>
         <div className="content">
-            <div className="meta">Posted {image.timestamp.format('ddd, MMM Do, h:mm A')}</div>
+            <div className="meta">
+                Posted {image.timestamp.format('ddd, MMM Do, h:mm A')}
+            </div>
             <div className="meta">By {image.sender}</div>
         </div>
     </div>
 );
 
-const ImageGrid = ({ images, imageSize, sortOrder }) => (
-    <div>
-        {imageGroups(images, sortOrder).map(({ title, images }) => (
-            <div className="section" key={title || 0}>
-                {title && <h2>{title}</h2>}
-                <div className="ui four stackable cards">
-                    {_.sortBy(images, sortFunction(sortOrder)).map(image => (
-                        <ImageCard
-                            key={image.event_id}
-                            image={image}
-                            imageSize={imageSize}
-                        />
+const slugify = key => String(key).replace(/[^0-9a-z]+/i, '-');
+
+const ImageGrid = ({ images, imageSize, sortOrder }) => {
+    const groups = imageGroups(images, sortOrder);
+    return (
+        <div>
+            {groups.length > 1 && (
+                <div className="ui secondary menu">
+                    {groups.map(({ title }) => (
+                        <a className="item" href={'#' + slugify(title)}>
+                            {title}
+                        </a>
                     ))}
                 </div>
-            </div>
-        ))}
-    </div>
-);
+            )}
+            {groups.map(({ title, images }) => (
+                <div
+                    className="section"
+                    key={slugify(title || 0)}
+                    id={slugify(title || 0)}
+                >
+                    {title && <h2>{title}</h2>}
+                    <div className="ui four stackable cards">
+                        {_.sortBy(images, sortFunction(sortOrder)).map(
+                            image => (
+                                <ImageCard
+                                    key={image.event_id}
+                                    image={image}
+                                    imageSize={imageSize}
+                                />
+                            )
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 const mapStateToProps = state => ({
     images: state.images,
