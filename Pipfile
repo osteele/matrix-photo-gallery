@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[requires]
+python_full_version = "3.6.5"
+
+[scripts]
+server = "env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000"
+
+[packages]
+Flask = "*"
+flask-restplus = "*"
+matrix_client = "*"
+mongoengine = "*"
+
+[dev-packages]
