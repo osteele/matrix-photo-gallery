@@ -1,3 +1,6 @@
+import moment from 'moment';
+import 'moment-timezone';
+
 export const ActionTypes = {
     SET_IMAGES: 'SET_IMAGES',
     SET_IMAGE_SIZE: 'SET_IMAGE_SIZE',
@@ -7,7 +10,7 @@ export const ActionTypes = {
 const decodeImage = event => {
     return {
         ...event,
-        timestamp: Date.parse(event.timestamp.replace(/\..+/, '')),
+        timestamp: moment(event.timestamp).tz('Asia/Bangkok'),
         sender: event.sender.replace(/@(.+):matrix.org/, '$1')
     };
 };
