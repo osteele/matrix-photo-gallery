@@ -19,6 +19,7 @@ const ImageCard = ({ image, imageSize }) => (
                 Posted {image.timestamp.format('h:mm A, ddd MMM Do')}
             </div>
             <div className="meta">By {image.sender}</div>
+            <div className="meta">Tide Level: {image.tideLevel}</div>
         </div>
     </div>
 );
