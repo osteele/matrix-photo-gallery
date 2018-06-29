@@ -1,18 +1,18 @@
-.app {
+.flex {
     // min-height: 100vh;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-main {
+main.flex {
     // flex: 1;
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-footer {
+footer.flex {
     flex-shrink: 0;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;

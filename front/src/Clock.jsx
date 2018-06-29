@@ -19,7 +19,7 @@ const Clock = ({ images, heartbeat }) => {
     const sky = 'rgb(' + [128, 128, 128 + val].join(',') + ')';
     return (
         <div>
-            <h1>Photos by Hour</h1>
+            <h1>Sundial</h1>
             <div>
                 {Math.floor(hour)}:{Math.floor((hour % 1) * 60)}
             </div>

@@ -20,26 +20,21 @@ const Footer = () => (
     </footer>
 );
 
+const NavLinkItem = props => (
+    <NavLink className="item" activeClassName="active" {...props}>
+        {props.children}
+    </NavLink>
+);
+
 const App = () => (
     <Router>
         <div className="app">
             <main className="ui container">
                 <nav className="ui tabular menu">
-                    <NavLink
-                        className="item"
-                        exact
-                        activeClassName="active"
-                        to="/"
-                    >
+                    <NavLinkItem exact to="/">
                         Gallery
-                    </NavLink>
-                    <NavLink
-                        className="item"
-                        activeClassName="active"
-                        to="/clock"
-                    >
-                        Time
-                    </NavLink>
+                    </NavLinkItem>
+                    <NavLinkItem to="/clock">Sundial</NavLinkItem>
                 </nav>
                 <Route exact path="/" component={Gallery} />
                 <Route path="/clock" component={Clock} />

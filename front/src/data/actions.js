@@ -1,5 +1,8 @@
 import moment from 'moment';
 import 'moment-timezone';
+import tideTable from './tide-table.json';
+
+window.tideTable = tideTable;
 
 export const ActionTypes = {
     SET_IMAGES: 'SET_IMAGES',
@@ -8,11 +11,23 @@ export const ActionTypes = {
     SET_CURRENT_TIME: 'SET_CURRENT_TIME'
 };
 
+const computeTideLevel = timestamp => {
+    const month = tideTable[timestamp.month()];
+    const day = month && month[timestamp.day()];
+    if (!day) {
+        console.info('missing tide level for', timestamp.month(), timestamp.day());
+    }
+    // TODO: interpolate
+    return day && day[timestamp.hour()];
+};
+
 const decodeImage = event => {
+    const timestamp = moment(event.timestamp).tz('Asia/Bangkok');
     return {
         ...event,
-        timestamp: moment(event.timestamp).tz('Asia/Bangkok'),
-        sender: event.sender.replace(/@(.+):matrix.org/, '$1')
+        timestamp,
+        sender: event.sender.replace(/@(.+):matrix.org/, '$1'),
+        tideLevel: computeTideLevel(timestamp)
     };
 };
 
