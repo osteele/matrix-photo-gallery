@@ -12,10 +12,10 @@ export const ActionTypes = {
 };
 
 const computeTideLevel = timestamp => {
-    const month = tideTable[timestamp.month()];
-    const day = month && month[timestamp.day()];
+    const month = tideTable[timestamp.month() + 1];
+    const day = month && month[timestamp.date() - 1];
     if (!day) {
-        console.info('missing tide level for', timestamp.month(), timestamp.day());
+        console.info('missing tide level for', timestamp.format('ll'));
     }
     // TODO: interpolate
     return day && day[timestamp.hour()];

@@ -19,7 +19,9 @@ const ImageCard = ({ image, imageSize }) => (
                 Posted {image.timestamp.format('h:mm A, ddd MMM Do')}
             </div>
             <div className="meta">By {image.sender}</div>
-            <div className="meta">Tide Level: {image.tideLevel}</div>
+            {image.tideLevel && (
+                <div className="meta">Tide Level: {image.tideLevel}m</div>
+            )}
         </div>
     </div>
 );
@@ -31,7 +33,11 @@ const ImageGrid = ({ images, imageSize, sortOrder }) => {
             {groups.length > 1 && (
                 <div className="ui borderless stackable menu">
                     {groups.map(({ title }) => (
-                        <a className="item" href={'#' + slugify(title)}>
+                        <a
+                            className="item"
+                            key={slugify(title)}
+                            href={'#' + slugify(title)}
+                        >
                             {title}
                         </a>
                     ))}
