@@ -1,0 +1,22 @@
+.app {
+    // min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main {
+    // flex: 1;
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+footer {
+    flex-shrink: 0;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    margin: 0px;
+}

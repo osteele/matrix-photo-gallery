@@ -5,5 +5,8 @@ module.exports = {
     define: {
         'process.env.API_SERVER_URL': `"${process.env.API_SERVER_URL ||
             'http://127.0.0.1:3000/'}"`
+    },
+    html: {
+        title: 'Dinaconfo — Dinaocon Photo Gallery'
     }
 };
