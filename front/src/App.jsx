@@ -38,7 +38,7 @@ const App = () => (
                         activeClassName="active"
                         to="/clock"
                     >
-                        Clock
+                        Time
                     </NavLink>
                 </nav>
                 <Route exact path="/" component={Gallery} />
