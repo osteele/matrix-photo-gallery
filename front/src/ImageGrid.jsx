@@ -1,43 +1,8 @@
 import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
-const sortFunction = sortOrder => {
-    switch (sortOrder) {
-        case 'date-asc':
-        case 'hour':
-            return ({ timestamp }) => timestamp.valueOf();
-        case 'date-desc':
-            return ({ timestamp }) => -timestamp.valueOf();
-        case 'sender':
-            return ({ sender }) => sender;
-    }
-};
-
-const imageGroups = (images, sortOrder) => {
-    switch (sortOrder) {
-        case 'hour': {
-            const hours = { morning: 6, afternoon: 12, evening: 18, night: 24 };
-            return Object.keys(hours).map(title => ({
-                title,
-                images: images.filter(
-                    image =>
-                        Math.floor(image.timestamp.hour() / 6) * 6 ===
-                        hours[title]
-                )
-            }));
-            return [{ images }];
-        }
-        case 'sender': {
-            const senders = [...new Set(_.map(images, 'sender'))].sort();
-            return senders.map(sender => ({
-                title: sender,
-                images: images.filter(image => image.sender === sender)
-            }));
-        }
-        default:
-            return [{ images }];
-    }
-};
+import { imageGroups, sortFunction } from './sorting';
+import { slugify } from './utils';
 
 const ImageCard = ({ image, imageSize }) => (
     <div className="ui card">
@@ -51,21 +16,19 @@ const ImageCard = ({ image, imageSize }) => (
         </div>
         <div className="content">
             <div className="meta">
-                Posted {image.timestamp.format('ddd, MMM Do, h:mm A')}
+                Posted {image.timestamp.format('h:mm A, ddd MMM Do')}
             </div>
             <div className="meta">By {image.sender}</div>
         </div>
     </div>
 );
 
-const slugify = key => String(key).replace(/[^0-9a-z]+/i, '-');
-
 const ImageGrid = ({ images, imageSize, sortOrder }) => {
     const groups = imageGroups(images, sortOrder);
     return (
         <div>
             {groups.length > 1 && (
-                <div className="ui secondary menu">
+                <div className="ui borderless stackable menu">
                     {groups.map(({ title }) => (
                         <a className="item" href={'#' + slugify(title)}>
                             {title}
@@ -80,7 +43,7 @@ const ImageGrid = ({ images, imageSize, sortOrder }) => {
                     id={slugify(title || 0)}
                 >
                     {title && <h2>{title}</h2>}
-                    <div className="ui four stackable cards">
+                    <div className="ui six doubling cards">
                         {_.sortBy(images, sortFunction(sortOrder)).map(
                             image => (
                                 <ImageCard

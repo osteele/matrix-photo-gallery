@@ -24,6 +24,7 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
                 onClick={() => setSortOrder('date-asc')}
             >
                 <i className="sort numeric up icon" />
+                Oldest First
             </button>
             <button
                 className="ui button"
@@ -31,6 +32,7 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
                 onClick={() => setSortOrder('date-desc')}
             >
                 <i className="sort numeric down icon" />
+                Most Recent First
             </button>
             <button
                 className="ui button"
@@ -38,6 +40,7 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
                 onClick={() => setSortOrder('sender')}
             >
                 <i className="address card outline icon" />
+                Group by Sender
             </button>
             <button
                 className="ui button"
@@ -45,6 +48,7 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
                 onClick={() => setSortOrder('hour')}
             >
                 <i className="clock outline icon" />
+                Group by Time of Day
             </button>
         </div>
     </div>
