@@ -8,6 +8,7 @@ const debug = true;
 export default function setupStore(apiClient) {
     const initialState = {
         apiClient,
+        heartbeat: new Date(),
         images: [],
         imageSize: 'small',
         sortOrder: 'date-desc'

@@ -4,7 +4,8 @@ import 'moment-timezone';
 export const ActionTypes = {
     SET_IMAGES: 'SET_IMAGES',
     SET_IMAGE_SIZE: 'SET_IMAGE_SIZE',
-    SET_SORT_ORDER: 'SET_SORT_ORDER'
+    SET_SORT_ORDER: 'SET_SORT_ORDER',
+    SET_CURRENT_TIME: 'SET_CURRENT_TIME'
 };
 
 const decodeImage = event => {
@@ -25,8 +26,17 @@ export const getEvents = () => (dispatch, getStore) =>
             })
         );
 
-export const setImageSize = imageSize => dispatch =>
-    dispatch({ type: ActionTypes.SET_IMAGE_SIZE, imageSize });
+export const setImageSize = imageSize => ({
+    type: ActionTypes.SET_IMAGE_SIZE,
+    imageSize
+});
 
-export const setSortOrder = sortOrder => dispatch =>
-    dispatch({ type: ActionTypes.SET_SORT_ORDER, sortOrder });
+export const setSortOrder = sortOrder => ({
+    type: ActionTypes.SET_SORT_ORDER,
+    sortOrder
+});
+
+export const updateTime = () => ({
+    type: ActionTypes.SET_CURRENT_TIME,
+    timestamp: new Date()
+});
