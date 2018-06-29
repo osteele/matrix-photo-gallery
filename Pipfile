@@ -19,5 +19,9 @@ matrix_client = "*"
 mongoengine = "*"
 gunicorn = "*"
 flask-cors = "*"
+lxml = "*"
+cssselect = "*"
+pandas = "*"
+request = "*"
 
 [dev-packages]
