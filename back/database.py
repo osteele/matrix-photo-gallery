@@ -11,6 +11,7 @@ MONGO_RE = (r'mongodb://'
             r'/(?P<db>.+)')
 
 if MONGODB_URI:
+    print(f"Connecting to {MONGODB_URI}")
     connect_args = re.match(MONGO_RE, MONGODB_URI).groupdict()
     connect(**connect_args)
 else:
