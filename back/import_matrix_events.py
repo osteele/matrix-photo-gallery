@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from itertools import islice
 
 import click
 from matrix_client.client import MatrixClient
@@ -28,37 +29,33 @@ def matrix_client():
     return client
 
 
-def event_is_image(event):
-    return (event['type'] != 'm.room' and
-            event['content'].get('msgtype') == 'm.image')
+def is_image_event(event):
+    return event['type'] != 'm.room' and \
+        event['content'].get('msgtype') == 'm.image'
 
 
-def get_room_events(room_id, count=100):
+def get_room_events(room_id):
     """Iterate room events, starting at the cursor."""
     room = matrix_client().get_rooms()[room_id]
     print(f"Reading events from room {room.display_name!r}…")
     yield from room.events
-    room.event_history_limit = len(room.events) + count
     batch_size = 1000  # empirically, this is the max accepted
     prev_batch = room.prev_batch
-    while len(room.events) < count:
-        # room.backfill_previous_messages(limit=batch_size)
+    while True:
         res = room.client.api.get_room_messages(room.room_id, prev_batch, 'b',
                                                 limit=batch_size)
         events = res['chunk']
         if not events:
             break
-        print(f"Got {len(events)} new events...")
-        for event in events:
-            room._put_event(event)
+        print(f"Read {len(events)} events...")
         yield from events
-        prev_batch = res['start']
+        prev_batch = res['end']
 
 
-def get_room_image_events(room_id, count=100):
+def get_room_image_events(room_id):
     skipped = 0
-    for event in get_room_events(room_id, count):
-        if event_is_image(event):
+    for event in get_room_events(room_id):
+        if is_image_event(event):
             yield event
         else:
             skipped += 1
@@ -66,11 +63,12 @@ def get_room_image_events(room_id, count=100):
                 print(f"Skipped {skipped} non-image events")
 
 
-def save_new_image_events(room_id, count=100):
-    # print(f"Skipping {len1 - len(events)} event images that were already saved")
-    # print(f"Saving {len(events)} event images")
+def save_new_image_events(room_id, limit=None):
     saved, skipped = 0, 0
-    for event in get_room_image_events(room_id, count):
+    events = get_room_image_events(room_id)
+    if limit:
+        events = islice(events, limit)
+    for event in events:
         yield (saved, skipped)
         instance = Image.objects(event_id=event['event_id'], room_id=event['room_id'])
         if instance:
@@ -92,23 +90,23 @@ def save_new_image_events(room_id, count=100):
         saved += 1
 
 
-def import_events_images(room_id, count=100):
+def import_events_images(room_id, limit=100):
     last_saved, last_skipped = 0, 0
-    for saved_count, skipped_count in save_new_image_events(room_id, count):
+    for saved_count, skipped_count in save_new_image_events(room_id, limit):
         if saved_count > last_saved and saved_count % 100 == 0:
-            print(f"Saved {saved_count} event images")
+            print(f"Saved {saved_count} images")
         if skipped_count > last_skipped and skipped_count % 100 == 0:
-            print(f"Skipped {skipped_count} previously saved images")
+            print(f"Skipped {skipped_count} previously-saved images")
         last_saved, last_skipped = saved_count, skipped_count
-    print(f"Saved {saved_count} event images; skipped {skipped_count} previously saved")
+    print(f"Saved {saved_count} new images; skipped {skipped_count} previously saved")
 
 
 @app.cli.command(name='import-events')
-@click.option('--count', type=int, default=1000)
-def import_events(count=300):
+@click.option('--limit', type=int, default=1000)
+def import_events(limit):
     """Load events."""
     for room_id in MATRIX_ROOM_IDS:
-        import_events_images(room_id, count=count)
+        import_events_images(room_id, limit=limit)
     print(f"The database now has {Image.objects.count()} images")
 
 
