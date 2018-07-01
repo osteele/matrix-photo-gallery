@@ -40,7 +40,7 @@ const Tides = ({ images, heartbeat }) => {
                                 display: alpha > 0 ? 'block' : 'none',
                                 opacity: Math.max(0, alpha)
                             }}
-                            src={image.thumbnail_url || image.image_url}
+                            src={image.thumbnail_url}
                         />
                     )
                 );

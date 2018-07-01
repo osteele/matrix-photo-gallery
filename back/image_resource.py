@@ -1,6 +1,6 @@
 from flask_restplus import Namespace, Resource, fields
 
-from .image_document import Image
+from .schema import Image
 
 api = Namespace('images')
 
@@ -11,6 +11,7 @@ model = api.model('App', {
     'timestamp': fields.DateTime(readonly=True),
     'image_url': fields.String(readonly=True),
     'thumbnail_url': fields.String(readonly=True),
+    'small_thumbnail_url': fields.String(readonly=True),
 })
 
 

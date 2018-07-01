@@ -56,7 +56,7 @@ const Clock = ({ images, heartbeat }) => {
                                     top: cy + ir * Math.sin(angle) + 'px',
                                     opacity: alpha
                                 }}
-                                src={image.thumbnail_url || image.image_url}
+                                src={image.thumbnail_url}
                             />
                         )
                     );

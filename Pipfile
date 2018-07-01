@@ -23,5 +23,7 @@ lxml = "*"
 cssselect = "*"
 pandas = "*"
 request = "*"
+pillow = "*"
+"boto3" = "*"
 
 [dev-packages]

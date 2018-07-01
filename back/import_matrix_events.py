@@ -6,7 +6,7 @@ import click
 from matrix_client.client import MatrixClient
 
 from .app import app
-from .image_document import Image
+from .schema import Image
 
 MATRIX_USER = os.environ['MATRIX_USER']
 MATRIX_PASSWORD = os.environ['MATRIX_PASSWORD']
