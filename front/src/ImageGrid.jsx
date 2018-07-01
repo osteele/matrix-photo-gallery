@@ -10,7 +10,7 @@ const ImageCard = ({ image, imageSize }) => (
             <LazyLoad key={image.event_id}>
                 <img
                     className={'ui image ' + imageSize}
-                    src={image.thumbnail_url || image.image_url}
+                    src={image.thumbnail_url}
                 />
             </LazyLoad>
         </div>

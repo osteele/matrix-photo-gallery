@@ -21,12 +21,14 @@ const computeTideLevel = timestamp => {
     return day && day[timestamp.hour()];
 };
 
-const decodeImage = event => {
-    const timestamp = moment(event.timestamp).tz('Asia/Bangkok');
+const decodeImage = image => {
+    const timestamp = moment(image.timestamp).tz('Asia/Bangkok');
     return {
-        ...event,
+        ...image,
         timestamp,
-        sender: event.sender.replace(/@(.+):matrix.org/, '$1'),
+        thumbnail_url:
+            image.small_thumbnail_url || image.thumbnail_url || image.image_url,
+        sender: image.sender.replace(/@(.+):matrix.org/, '$1'),
         tideLevel: computeTideLevel(timestamp)
     };
 };
