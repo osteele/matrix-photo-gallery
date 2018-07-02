@@ -16,7 +16,7 @@ def is_image_event(event):
         event['content'].get('msgtype') == 'm.image'
 
 
-def get_room_events(room_id):
+def iter_room_events(room_id):
     """Iterate room events, starting at the cursor."""
     room = matrix_client().get_rooms()[room_id]
     print(f"Reading events from room {room.display_name!r}…")
@@ -34,28 +34,14 @@ def get_room_events(room_id):
         prev_batch = res['end']
 
 
-def get_room_image_events(room_id):
-    skipped = 0
-    for event in get_room_events(room_id):
-        if is_image_event(event):
-            yield event
-        else:
-            skipped += 1
-            if not skipped % 100:
-                print(f"Skipped {skipped} non-image events")
-
-
 def save_new_image_events(room_id, limit=None):
-    saved, skipped = 0, 0
-    events = get_room_image_events(room_id)
+    image_keys = {(image.room_id, image.event_id) for image in Image.objects}
+    events = filter(is_image_event, iter_room_events(room_id))
+    events = (event for event in events
+              if (event['room_id'], event['event_id']) not in image_keys)
     if limit:
         events = islice(events, limit)
     for event in events:
-        yield (saved, skipped)
-        instance = Image.objects(event_id=event['event_id'], room_id=event['room_id'])
-        if instance:
-            skipped += 1
-            continue
         content = event['content']
         fields = {
             'event_id': event['event_id'],
@@ -69,18 +55,17 @@ def save_new_image_events(room_id, limit=None):
                 content['info']['thumbnail_url'])
         image = Image(**fields)
         image.save()
-        saved += 1
+        yield image
 
 
 def import_event_images(room_id, limit=100):
-    last_saved, last_skipped = 0, 0
-    for saved_count, skipped_count in save_new_image_events(room_id, limit):
-        if saved_count > last_saved and saved_count % 100 == 0:
+    saved_count = 0
+    for image in save_new_image_events(room_id, limit):
+        saved_count += 1
+        if saved_count % 100 == 0:
             print(f"Saved {saved_count} images")
-        if skipped_count > last_skipped and skipped_count % 100 == 0:
-            print(f"Skipped {skipped_count} previously-saved images")
-        last_saved, last_skipped = saved_count, skipped_count
-    print(f"Saved {saved_count} new images; skipped {skipped_count} previously saved")
+    if saved_count:
+        print(f"Saved {saved_count} new images")
 
 
 @app.cli.command(name='import-images')
