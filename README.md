@@ -1,11 +1,11 @@
 # Matrix Photo Gallery
 
-\[Under construction]
-
 A photo gallery for photos from a Matrix room.
 
-Developed as an experimentation platform for [Dinacon
-2018](https://www.dinacon.org).
+This project is being developed as a platform for photo visualization
+experiments at [Dinacon 2018](https://www.dinacon.org).
+
+![](./docs/screenshot.png)
 
 ## Develop
 
