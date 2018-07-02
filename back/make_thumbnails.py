@@ -8,6 +8,7 @@ import requests
 
 from .app import app
 from .schema import Image
+from .thumbnails import SMALL_THUMBNAIL_DIR, THUMBNAIL_DIR
 
 CACHE_DIR = Path('.cache')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
@@ -20,7 +21,6 @@ def filesize(path):
 
 def download_image(image, thumbnail_dir):
     image_url = image.thumbnail_url or image.image_url
-    # download_url = matrix_client().api.get_download_url(image_url)
     res = requests.head(image_url)
     assert res.status_code == 200
     mtype, subtype = res.headers['content-type'].split('/', 2)
@@ -82,17 +82,17 @@ def make_thumbnails():
     # print('Already uploaded:', s3_object_keys)
     images = [img for img in Image.objects if not img.small_thumbnail_url]
     print(f"Remaining: {len(images)} images")
-    thumbnail_dir = CACHE_DIR / 'thumbnails'
-    output_dir = CACHE_DIR / 'small_thumbnails'
+    input_dir = THUMBNAIL_DIR
+    output_dir = SMALL_THUMBNAIL_DIR
     output_dir.mkdir(exist_ok=True)
     for image in images:
         stem = (image.thumbnail_url or image.image_url).split('/')[-1]
-        files = list(thumbnail_dir.glob(stem + '.*'))
+        files = list(input_dir.glob(stem + '.*'))
         assert len(files) <= 1, "More than one file matches {stem}: {files}"
         if files:
             infile = Path(files[0])
         else:
-            infile = download_image(image, thumbnail_dir)
+            infile = download_image(image, input_dir)
             if not infile:
                 continue
         outfile = (output_dir / stem).with_suffix(infile.suffix)
