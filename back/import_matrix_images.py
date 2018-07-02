@@ -72,7 +72,7 @@ def save_new_image_events(room_id, limit=None):
         saved += 1
 
 
-def import_events_images(room_id, limit=100):
+def import_event_images(room_id, limit=100):
     last_saved, last_skipped = 0, 0
     for saved_count, skipped_count in save_new_image_events(room_id, limit):
         if saved_count > last_saved and saved_count % 100 == 0:
@@ -83,14 +83,14 @@ def import_events_images(room_id, limit=100):
     print(f"Saved {saved_count} new images; skipped {skipped_count} previously saved")
 
 
-@app.cli.command(name='import-events')
+@app.cli.command(name='import-images')
 @click.option('--limit', type=int, default=1000)
-def import_events(limit):
-    """Load events."""
+def import_images(limit):
+    """Import images from the Matrix rooms in MATRIX_ROOM_IDS."""
     for room_id in MATRIX_ROOM_IDS:
-        import_events_images(room_id, limit=limit)
+        import_event_images(room_id, limit=limit)
     print(f"The database now has {Image.objects.count()} images")
 
 
 if __name__ == '__main__':
-    import_events()
+    import_images()
