@@ -3,7 +3,8 @@ import os
 from pathlib import Path
 
 import boto3
-import PIL  # import Image
+import PIL
+import requests
 
 from .app import app
 from .schema import Image
@@ -15,6 +16,26 @@ BUCKET_PREFIX = os.environ.get('BUCKET_PREFIX', 'gallery/')
 
 def filesize(path):
     return Path(path).stat().st_size
+
+
+def download_image(image, thumbnail_dir):
+    image_url = image.thumbnail_url or image.image_url
+    # download_url = matrix_client().api.get_download_url(image_url)
+    res = requests.head(image_url)
+    assert res.status_code == 200
+    mtype, subtype = res.headers['content-type'].split('/', 2)
+    if mtype != 'image':
+        print(f"Skipping {image_url}: {res.headers['content-type']}")
+        return None
+
+    res = requests.get(image_url)
+    assert res.status_code == 200
+    stem = image_url.split('/')[-1]
+    filename = (thumbnail_dir / stem).with_suffix('.' + subtype)
+    print('Downloading', image_url, '->', filename)
+    with open(filename, 'wb') as fp:
+        fp.write(res.content)
+    return filename
 
 
 def s3_client():
@@ -53,23 +74,27 @@ def upload_file(path, key=None):
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
 
-@app.cli.command()
+@app.cli.command(name='make-thumbnails')
 def make_thumbnails():
+    print("Examining S3 bucket...")
     create_bucket()
     s3_object_keys = {obj['Key'] for obj in iter_bucket_objects()}
     # print('Already uploaded:', s3_object_keys)
     images = [img for img in Image.objects if not img.small_thumbnail_url]
+    print(f"Remaining: {len(images)} images")
     thumbnail_dir = CACHE_DIR / 'thumbnails'
     output_dir = CACHE_DIR / 'small_thumbnails'
     output_dir.mkdir(exist_ok=True)
     for image in images:
         stem = (image.thumbnail_url or image.image_url).split('/')[-1]
         files = list(thumbnail_dir.glob(stem + '.*'))
-        if not files:
-            print(f"No local thumbnail for {stem}; skipping")
-            continue
-        assert len(files) == 1, "More than one file matches {stem}: {files}"
-        infile = Path(files[0])
+        assert len(files) <= 1, "More than one file matches {stem}: {files}"
+        if files:
+            infile = Path(files[0])
+        else:
+            infile = download_image(image, thumbnail_dir)
+            if not infile:
+                continue
         outfile = (output_dir / stem).with_suffix(infile.suffix)
         s3_key = BUCKET_PREFIX + outfile.name
         small_thumbnail_url = ''.join(

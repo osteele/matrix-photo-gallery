@@ -8,8 +8,10 @@ python_full_version = "3.6.5"
 
 [scripts]
 server = "env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000"
-deploy = "git push heroku +master"
+deploy-backend = "git push heroku +master"
+deploy-frontend = "bash -c 'cd front && yarn deploy'"
 import-events = "env FLASK_APP=back:app FLASK_ENV=development flask import-events"
+make-thumbnails = "env FLASK_APP=back:app FLASK_ENV=development flask make-thumbnails"
 update-server = "heroku run flask read-events --count 200"
 
 [packages]
@@ -24,6 +26,8 @@ cssselect = "*"
 pandas = "*"
 request = "*"
 pillow = "*"
-"boto3" = "*"
+boto3 = "*"
+requests = "*"
 
 [dev-packages]
+autopep8 = "*"

@@ -3,30 +3,12 @@ from datetime import datetime
 from itertools import islice
 
 import click
-from matrix_client.client import MatrixClient
 
 from .app import app
+from .matrix_connection import matrix_client
 from .schema import Image
 
-MATRIX_USER = os.environ['MATRIX_USER']
-MATRIX_PASSWORD = os.environ['MATRIX_PASSWORD']
-MATRIX_HOST = os.environ.get('MATRIX_HOST', "https://matrix.org")
 MATRIX_ROOM_IDS = os.environ['MATRIX_ROOM_IDS'].split(',')
-
-
-_matrix_client = None
-
-
-def matrix_client():
-    global _matrix_client
-    if _matrix_client:
-        return _matrix_client
-    print(f"Signing into {MATRIX_HOST}...")
-    client = MatrixClient(MATRIX_HOST)
-    client.login_with_password(username=MATRIX_USER,
-                               password=MATRIX_PASSWORD)
-    _matrix_client = client
-    return client
 
 
 def is_image_event(event):
@@ -42,8 +24,8 @@ def get_room_events(room_id):
     batch_size = 1000  # empirically, this is the max accepted
     prev_batch = room.prev_batch
     while True:
-        res = room.client.api.get_room_messages(room.room_id, prev_batch, 'b',
-                                                limit=batch_size)
+        res = room.client.api.get_room_messages(
+            room.room_id, prev_batch, 'b', limit=batch_size)
         events = res['chunk']
         if not events:
             break
