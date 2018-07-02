@@ -74,7 +74,7 @@ def upload_file(path, key=None):
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
 
-@app.cli.command(name='make-thumbnails')
+@app.cli.command(name='make-small-thumbnails')
 def make_thumbnails():
     print("Examining S3 bucket...")
     create_bucket()
