@@ -6,10 +6,16 @@ import App from './App';
 import { getEvents, updateTime } from './data/actions';
 import setupStore from './data/store';
 
+const HEARTBEAT_HZ = 10;
 const API_SERVER_URL = process.env.API_SERVER_URL || 'http://127.0.0.1:3000/';
+
 const store = setupStore(axios.create({ baseURL: API_SERVER_URL }));
 store.dispatch(getEvents());
-setInterval(() => store.dispatch(updateTime()), 250);
+setInterval(
+    () => store.dispatch(updateTime()),
+    Math.floor(1000 / HEARTBEAT_HZ)
+);
+
 ReactDOM.render(
     <Provider store={store}>
         <App />
