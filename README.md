@@ -38,7 +38,7 @@ $ pipenv run server
 or:
 
 ```shell
-env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000
+env FLASK_APP=back:app FLASK_ENV=development flask run
 ```
 
 Run the front end (client):

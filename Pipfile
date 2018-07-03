@@ -7,7 +7,7 @@ verify_ssl = true
 python_full_version = "3.6.5"
 
 [scripts]
-server = "env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000"
+server = "env FLASK_APP=back:app FLASK_ENV=development flask run"
 client = "bash -c 'cd front && yarn start'"
 deploy-backend = "git push heroku +master"
 deploy-frontend = "bash -c 'cd front && yarn deploy'"
