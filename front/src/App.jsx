@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import { BrowserRouter as Router, NavLink, Route } from 'react-router-dom';
 import ButtonBar from './ButtonBar';
 import Clock from './Clock';
@@ -27,9 +28,9 @@ const NavLinkItem = props => (
     </NavLink>
 );
 
-const App = () => (
+const App = ({ background }) => (
     <Router>
-        <div className="app">
+        <div className="app" style={{ background }}>
             <main className="ui container">
                 <nav className="ui tabular menu">
                     <NavLinkItem exact to="/">
@@ -47,4 +48,8 @@ const App = () => (
     </Router>
 );
 
-export default App;
+const mapStateToProps = state => ({
+    background: state.background
+});
+
+export default connect(mapStateToProps)(App);

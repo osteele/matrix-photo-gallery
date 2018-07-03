@@ -8,6 +8,7 @@ export const ActionTypes = {
     SET_IMAGES: 'SET_IMAGES',
     SET_IMAGE_SIZE: 'SET_IMAGE_SIZE',
     SET_SORT_ORDER: 'SET_SORT_ORDER',
+    SET_BACKGROUND: 'SET_BACKGROUND',
     SET_CURRENT_TIME: 'SET_CURRENT_TIME'
 };
 
@@ -42,6 +43,14 @@ export const getEvents = () => (dispatch, getStore) =>
                 data: data.map(decodeImage)
             })
         );
+
+export const setBackground = background => {
+    document.body.style.backgroundColor = background;
+    return {
+        type: ActionTypes.SET_BACKGROUND,
+        background
+    };
+};
 
 export const setImageSize = imageSize => ({
     type: ActionTypes.SET_IMAGE_SIZE,

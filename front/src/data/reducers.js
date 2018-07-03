@@ -2,6 +2,15 @@ import { ActionTypes } from './actions';
 
 export const apiClient = (state = {}) => state;
 
+export const background = (state = {}, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_BACKGROUND:
+            return action.background;
+        default:
+            return state;
+    }
+};
+
 export const heartbeat = (state = {}, action) => {
     switch (action.type) {
         case ActionTypes.SET_CURRENT_TIME:

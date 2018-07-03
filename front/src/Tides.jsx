@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import withBackground from './background';
+import { setBackground } from './data/actions';
 
 const Tides = ({ images, heartbeat }) => {
     const width = 800;
@@ -53,4 +55,12 @@ const mapStateToProps = state => ({
     heartbeat: state.heartbeat,
     images: state.images
 });
-export default connect(mapStateToProps)(Tides);
+
+const mapDispatchToProps = dispatch => ({
+    setBackground: color => dispatch(setBackground(color))
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withBackground('blue')(Tides));
