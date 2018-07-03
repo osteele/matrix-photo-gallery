@@ -29,13 +29,25 @@ them to the S3 bucket named `BUCKET_NAME`.
 
 ### Run
 
-Run the back end:
+Run the back end (server):
 
 ```shell
 $ pipenv run server
 ```
 
-Run the front end:
+or:
+
+```shell
+env FLASK_APP=back:app FLASK_ENV=development flask run --port=3000
+```
+
+Run the front end (client):
+
+```shell
+$ pipenv run client
+```
+
+or:
 
 ```shell
 $ cd front
