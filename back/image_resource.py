@@ -1,4 +1,7 @@
+from urllib.parse import urlparse
+
 from flask import current_app as app
+from flask import request
 from flask_restplus import Namespace, Resource, fields
 
 from .schema import Image
@@ -29,9 +32,10 @@ class Images(Resource):
 
 
 def use_local_thumbnails(images):
+    base = '//' + urlparse(request.url).netloc
     thumbnails = {p.name for p in SMALL_THUMBNAIL_DIR.glob('*')}
     for image in images:
         if image.small_thumbnail_url:
             name = image.small_thumbnail_url.split('/')[-1]
             if name in thumbnails:
-                image.small_thumbnail_url = '/images/small-thumbnail/' + name
+                image.small_thumbnail_url = base + '/images/small-thumbnail/' + name
