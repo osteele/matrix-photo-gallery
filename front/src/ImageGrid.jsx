@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
+import withBackground from './background';
+import { setBackground } from './data/actions';
 import { imageGroups, sortFunction } from './sorting';
 import { slugify } from './utils';
 
@@ -73,4 +75,11 @@ const mapStateToProps = state => ({
     sortOrder: state.sortOrder
 });
 
-export default connect(mapStateToProps)(ImageGrid);
+const mapDispatchToProps = dispatch => ({
+    setBackground: color => dispatch(setBackground(color))
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withBackground('white')(ImageGrid));
