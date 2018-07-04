@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { setBackground } from './data/actions';
+import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages } from './wrappers';
+
+const USE_SVG_IMAGES = 1;
 
 const Tides = ({ images, heartbeat }) => {
     const width = 1000;
@@ -26,9 +29,12 @@ const Tides = ({ images, heartbeat }) => {
     const waterLevel =
         tideLevel +
         waveAmplitude * Math.cos((heartbeat * 2 * Math.PI) / wavePeriod);
-    // svg
+
     const water2y = level => ((level - tideMin) / tideRange) * height;
-    const tidePath = ['M0 0', 'h', width, 'v2500', 'H0'];
+
+    // svg
+    const tideTopPath = ['M0 0', 'h', width, 'v2500', 'H0'];
+
     return (
         <section className="tides">
             <svg className="background">
@@ -51,18 +57,21 @@ const Tides = ({ images, heartbeat }) => {
                     fill="url(#beachGradient)"
                 />
             </svg>
-            {images.map((image, i) => {
-                const level = image.tideLevel;
-                return (
-                    <Image
-                        image={image}
-                        key={image.event_id + i}
-                        x={(i * (width - 50)) / images.length}
-                        y={water2y(level)}
-                        opacity={1 - (level - waterLevel) ** 2 / tideRange ** 2}
-                    />
-                );
-            })}
+            {!USE_SVG_IMAGES &&
+                images.map((image, i) => {
+                    const level = image.tideLevel;
+                    return (
+                        <Image
+                            image={image}
+                            key={image.event_id + i}
+                            x={(i * (width - 50)) / images.length}
+                            y={water2y(level)}
+                            opacity={
+                                1 - (level - waterLevel) ** 2 / tideRange ** 2
+                            }
+                        />
+                    );
+                })}
             <svg className="tide">
                 <defs>
                     <linearGradient
@@ -75,8 +84,24 @@ const Tides = ({ images, heartbeat }) => {
                         <stop offset="30%" stopColor="blue" stopOpacity="1" />
                     </linearGradient>
                 </defs>
+
+                {USE_SVG_IMAGES &&
+                    images.map((image, i) => (
+                        <image
+                            key={image.event_id + i}
+                            x={(i * (width - 50)) / images.length}
+                            y={water2y(image.tideLevel)}
+                            width={50}
+                            height={50}
+                            xlinkHref={image.thumbnail_url}
+                        />
+                    ))}
+
                 <svg y={water2y(tideLevel)}>
-                    <path d={tidePath.join(' ')} fill="url(#tidalGradient)" />
+                    <path
+                        d={tideTopPath.join(' ')}
+                        fill="url(#tidalGradient)"
+                    />
                 </svg>
             </svg>
         </section>
@@ -93,42 +118,6 @@ const Image = ({ image, x, y, opacity }) => (
         src={image.thumbnail_url}
     />
 );
-
-// {images.map((image, i) => (
-//     <image
-//         key={image.event_id + i}
-//         x={(i * (width - 50)) / images.length}
-//         y={water2y(image.tideLevel)}
-//         width={50}
-//         height={50}
-//         xlinkHref={image.thumbnail_url}
-//     />
-// ))}
-
-function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const t = a[i];
-        a[i] = a[j];
-        a[j] = t;
-    }
-    return a;
-}
-
-const replicateArray = (ar, length) => {
-    let result = ar;
-    while (result.length < length) {
-        result = result.concat(ar.slice(length - result.length));
-    }
-    return result;
-};
-
-const memoTable = {};
-const onceish = fn => {
-    let value = memoTable[fn.length];
-    if (!value) memoTable[fn.length] = value = fn();
-    return value;
-};
 
 const mapStateToProps = ({ heartbeat, images }) => ({
     heartbeat: heartbeat,

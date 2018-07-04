@@ -55,6 +55,10 @@ footer.flex {
     svg {
         transition: y 1s;
     }
+    image {
+        // clip-path: circle(25px at 24px 24px);
+        clip-path: inset(25% 25% round 25% 25%);
+    }
 }
 
 .tides svg.background,
