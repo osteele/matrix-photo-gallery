@@ -9,7 +9,8 @@ export const ActionTypes = {
     SET_IMAGE_SIZE: 'SET_IMAGE_SIZE',
     SET_SORT_ORDER: 'SET_SORT_ORDER',
     SET_BACKGROUND: 'SET_BACKGROUND',
-    SET_CURRENT_TIME: 'SET_CURRENT_TIME'
+    SET_CURRENT_TIME: 'SET_CURRENT_TIME',
+    SET_VIEW_CLASS: 'SET_VIEW_CLASS'
 };
 
 const computeTideLevel = timestamp => {
@@ -61,6 +62,13 @@ export const setSortOrder = sortOrder => ({
     type: ActionTypes.SET_SORT_ORDER,
     sortOrder
 });
+
+export const setViewClass = viewClass => (dispatch, getStore) =>
+    getStore().viewClass === viewClass ||
+    dispatch({
+        type: ActionTypes.SET_VIEW_CLASS,
+        viewClass
+    });
 
 export const updateTime = () => ({
     type: ActionTypes.SET_CURRENT_TIME,

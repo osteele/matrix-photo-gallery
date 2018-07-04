@@ -11,3 +11,8 @@ export const withImages = WrappedComponent => props =>
             <p />
         </div>
     );
+
+export const withViewClass = viewClass => WrappedComponent => props => {
+    props.setViewClass(viewClass);
+    return <WrappedComponent {...props} />;
+};

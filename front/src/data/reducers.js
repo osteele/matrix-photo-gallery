@@ -1,7 +1,6 @@
 import { ActionTypes } from './actions';
 
 export const apiClient = (state = {}) => state;
-
 export const audioBaseUrl = (state = {}) => state;
 
 export const background = (state = {}, action) => {
@@ -44,6 +43,15 @@ export const sortOrder = (state = {}, action) => {
     switch (action.type) {
         case ActionTypes.SET_SORT_ORDER:
             return action.sortOrder;
+        default:
+            return state;
+    }
+};
+
+export const viewClass = (state = {}, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_VIEW_CLASS:
+            return action.viewClass;
         default:
             return state;
     }

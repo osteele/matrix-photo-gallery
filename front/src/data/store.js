@@ -13,7 +13,8 @@ export default function setupStore(apiClient, audioBaseUrl) {
         heartbeat: new Date(),
         images: null,
         imageSize: 'small',
-        sortOrder: 'date-desc'
+        sortOrder: 'date-desc',
+        viewClass: null
     };
 
     const middleware =

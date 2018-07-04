@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { setBackground } from './data/actions';
+import { setBackground, setViewClass } from './data/actions';
 import { onceish, replicateArray, shuffle } from './utils';
-import { withBackground, withImages } from './wrappers';
+import { withBackground, withImages, withViewClass } from './wrappers';
 
 const USE_SVG_IMAGES = 1;
 
@@ -82,7 +82,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
 
     return (
-        <section className="tides">
+        <section id="tides-container">
             <svg className="background">
                 <defs>
                     <linearGradient
@@ -199,10 +199,11 @@ const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setBackground: color => dispatch(setBackground(color))
+    setBackground: color => dispatch(setBackground(color)),
+    setViewClass: viewClass => dispatch(setViewClass(viewClass))
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withImages(withBackground('gray')(Tides)));
+)(withImages(withBackground('gray')(withViewClass('tides')(Tides))));
