@@ -9,7 +9,12 @@ import setupStore from './data/store';
 const HEARTBEAT_HZ = 10;
 const API_SERVER_URL = process.env.API_SERVER_URL || 'http://127.0.0.1:3000/';
 
-const store = setupStore(axios.create({ baseURL: API_SERVER_URL }));
+const store = setupStore(
+    axios.create({
+        baseURL: API_SERVER_URL
+    }),
+    API_SERVER_URL + 'static'
+);
 store.dispatch(getEvents());
 setInterval(
     () => store.dispatch(updateTime()),

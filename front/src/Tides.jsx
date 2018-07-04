@@ -9,7 +9,9 @@ const SAND_COLOR = '#adb9b6';
 const TIDAL_COLOR = '#b8b09b';
 const WAVE_COLOR = '#b2c4d6';
 
-const Tides = ({ images, heartbeat }) => {
+const API_SERVER_URL = process.env.API_SERVER_URL || 'http://127.0.0.1:3000/';
+
+const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     // dimensions
     const windowWidth = document.body.clientWidth;
     const windowHeight = document.body.clientHeight;
@@ -131,6 +133,7 @@ const Tides = ({ images, heartbeat }) => {
                     />
                 </svg>
             </svg>
+            <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>
     );
 };
@@ -146,8 +149,9 @@ const Image = ({ image, x, y, opacity }) => (
     />
 );
 
-const mapStateToProps = ({ heartbeat, images }) => ({
-    heartbeat: heartbeat,
+const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
+    audioBaseUrl,
+    heartbeat,
     images:
         images &&
         onceish(() =>

@@ -2,6 +2,8 @@ import { ActionTypes } from './actions';
 
 export const apiClient = (state = {}) => state;
 
+export const audioBaseUrl = (state = {}) => state;
+
 export const background = (state = {}, action) => {
     switch (action.type) {
         case ActionTypes.SET_BACKGROUND:

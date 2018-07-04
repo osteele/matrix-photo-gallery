@@ -5,9 +5,10 @@ import * as reducers from './reducers';
 
 const debug = true;
 
-export default function setupStore(apiClient) {
+export default function setupStore(apiClient, audioBaseUrl) {
     const initialState = {
         apiClient,
+        audioBaseUrl,
         background: 'white',
         heartbeat: new Date(),
         images: null,
