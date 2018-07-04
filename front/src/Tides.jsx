@@ -5,6 +5,9 @@ import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages } from './wrappers';
 
 const USE_SVG_IMAGES = 1;
+const SAND_COLOR = '#adb9b6';
+const TIDAL_COLOR = '#b8b09b';
+const WAVE_COLOR = '#b2c4d6';
 
 const Tides = ({ images, heartbeat }) => {
     // dimensions
@@ -33,7 +36,12 @@ const Tides = ({ images, heartbeat }) => {
         waveAmplitude * Math.cos((heartbeat * 2 * Math.PI) / wavePeriod);
 
     // tide level to y position
-    const water2y = level => ((level - tideMin) / tideRange) * windowHeight;
+    const tideTopMargin = 100;
+    const tideBottomMargin = 100;
+    const water2y = level =>
+        tideTopMargin +
+        ((level - tideMin) / tideRange) *
+            (windowHeight - tideTopMargin - tideBottomMargin);
 
     // svg
     const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
@@ -46,10 +54,10 @@ const Tides = ({ images, heartbeat }) => {
                         id="beachGradient"
                         gradientTransform="rotate(90)"
                     >
-                        <stop offset="9.5%" stopColor="#C2B280" />
-                        <stop offset="10%" stopColor="#b8b09b" />
-                        <stop offset="20%" stopColor="#b8b09b" />
-                        <stop offset="20.5%" stopColor="blue" />
+                        <stop offset="9.5%" stopColor={SAND_COLOR} />
+                        <stop offset="10%" stopColor={TIDAL_COLOR} />
+                        <stop offset="20%" stopColor={TIDAL_COLOR} />
+                        <stop offset="20.5%" stopColor={WAVE_COLOR} />
                     </linearGradient>
                 </defs>
                 <rect
@@ -81,10 +89,26 @@ const Tides = ({ images, heartbeat }) => {
                         id="tidalGradient"
                         gradientTransform="rotate(90)"
                     >
-                        <stop offset="0%" stopColor="blue" stopOpacity="0" />
-                        <stop offset="0.5%" stopColor="blue" stopOpacity="0" />
-                        <stop offset="10%" stopColor="blue" stopOpacity="1" />
-                        <stop offset="30%" stopColor="blue" stopOpacity="1" />
+                        <stop
+                            offset="0%"
+                            stopColor={WAVE_COLOR}
+                            stopOpacity="0"
+                        />
+                        <stop
+                            offset="0.5%"
+                            stopColor={WAVE_COLOR}
+                            stopOpacity="0"
+                        />
+                        <stop
+                            offset="10%"
+                            stopColor={WAVE_COLOR}
+                            stopOpacity="1"
+                        />
+                        <stop
+                            offset="30%"
+                            stopColor={WAVE_COLOR}
+                            stopOpacity="1"
+                        />
                     </linearGradient>
                 </defs>
 
