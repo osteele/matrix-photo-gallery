@@ -1,21 +1,27 @@
 import { connect } from 'react-redux';
-import { withImages } from './wrappers';
+import { withBackground, withImages } from './wrappers';
 
 const Clock = ({ images, heartbeat }) => {
     // images
     const n = images.length;
+
     // _.sortBy(images, ({ timestamp }) => timestamp.hour());
+
     // current hour
     const period = 30 * 1000; // real time for complete cycle
     const hour = ((heartbeat % period) / period) * 24;
+
     // sun's orbital radius
     const sr = 300;
     const sunAngle = -Math.PI / 2 + ((2 * Math.PI) / 12) * hour;
+
     // image orbital radius
     const ir = 200;
-    // center of display
+
+    // display center
     const cx = sr;
     const cy = sr;
+
     const val = 64 + Math.floor(63 * Math.cos((hour * Math.PI) / 12));
     const sky = 'rgb(' + [128, 128, 128 + val].join(',') + ')';
     return (
@@ -66,8 +72,12 @@ const Clock = ({ images, heartbeat }) => {
         </div>
     );
 };
+
 const mapStateToProps = state => ({
     heartbeat: state.heartbeat,
     images: state.images
 });
-export default connect(mapStateToProps)(withImages(Clock));
+
+export default connect(mapStateToProps)(
+    withImages(withBackground('white')(Clock))
+);
