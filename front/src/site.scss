@@ -21,16 +21,17 @@ footer.flex {
     margin: 0px;
 }
 
-.clock img {
-    transition: opacity 1s;
-}
-
-.clock .sun {
-    width: 50px;
-    height: 50px;
-    display: none;
-    background: yellow;
-    position: absolute;
-    transition: left 1s;
-    transition: top 1s;
+.clock {
+    img {
+        transition: opacity 1s;
+    }
+    .sun {
+        width: 50px;
+        height: 50px;
+        display: none;
+        background: yellow;
+        position: absolute;
+        transition: left 1s;
+        transition: top 1s;
+    }
 }
