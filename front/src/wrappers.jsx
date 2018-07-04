@@ -7,5 +7,7 @@ export const withImages = WrappedComponent => props =>
     props.images ? (
         <WrappedComponent {...props} />
     ) : (
-        <div className="ui loader" style={{ width: '100%', height: '100%' }} />
+        <div className="ui large active loader">
+            <p />
+        </div>
     );

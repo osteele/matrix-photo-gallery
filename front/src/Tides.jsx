@@ -7,13 +7,15 @@ import { withBackground, withImages } from './wrappers';
 const USE_SVG_IMAGES = 1;
 
 const Tides = ({ images, heartbeat }) => {
-    const width = 1000;
-    const height = 500;
+    // dimensions
+    const windowWidth = document.body.clientWidth;
+    const windowHeight = document.body.clientHeight;
+    const imageWidth = 50;
 
     // tide levels
-    const levels = _.chain(images).map('tideLevel');
-    const tideMin = levels.min().value();
-    const tideMax = levels.max().value();
+    const imageTideLevels = _.chain(images).map('tideLevel');
+    const tideMin = imageTideLevels.min().value();
+    const tideMax = imageTideLevels.max().value();
     const tideRange = tideMax - tideMin;
 
     // current tide level
@@ -30,10 +32,11 @@ const Tides = ({ images, heartbeat }) => {
         tideLevel +
         waveAmplitude * Math.cos((heartbeat * 2 * Math.PI) / wavePeriod);
 
-    const water2y = level => ((level - tideMin) / tideRange) * height;
+    // tide level to y position
+    const water2y = level => ((level - tideMin) / tideRange) * windowHeight;
 
     // svg
-    const tideTopPath = ['M0 0', 'h', width, 'v2500', 'H0'];
+    const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
 
     return (
         <section className="tides">
@@ -52,8 +55,8 @@ const Tides = ({ images, heartbeat }) => {
                 <rect
                     x="0"
                     y="0"
-                    width={width}
-                    height={1200}
+                    width={windowWidth}
+                    height={windowHeight}
                     fill="url(#beachGradient)"
                 />
             </svg>
@@ -64,7 +67,7 @@ const Tides = ({ images, heartbeat }) => {
                         <Image
                             image={image}
                             key={image.event_id + i}
-                            x={(i * (width - 50)) / images.length}
+                            x={(i * (windowWidth - imageWidth)) / images.length}
                             y={water2y(level)}
                             opacity={
                                 1 - (level - waterLevel) ** 2 / tideRange ** 2
@@ -89,10 +92,10 @@ const Tides = ({ images, heartbeat }) => {
                     images.map((image, i) => (
                         <image
                             key={image.event_id + i}
-                            x={(i * (width - 50)) / images.length}
+                            x={(i * (windowWidth - imageWidth)) / images.length}
                             y={water2y(image.tideLevel)}
-                            width={50}
-                            height={50}
+                            width={imageWidth}
+                            height={imageWidth}
                             xlinkHref={image.thumbnail_url}
                         />
                     ))}
@@ -140,4 +143,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withBackground('gray')(withImages(Tides)));
+)(withImages(withBackground('gray')(Tides)));
