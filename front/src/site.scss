@@ -21,19 +21,19 @@ footer.flex {
     margin: 0px;
 }
 
-.clock img,
-.tides img {
-    transition: opacity 1s;
-}
-
-.clock .sun {
-    width: 50px;
-    height: 50px;
-    display: none;
-    background: yellow;
-    position: absolute;
-    transition: left 1s;
-    transition: top 1s;
+.clock {
+    img {
+        transition: opacity 1s;
+    }
+    .sun {
+        width: 50px;
+        height: 50px;
+        display: none;
+        background: yellow;
+        position: absolute;
+        transition: left 1s;
+        transition: top 1s;
+    }
 }
 
 .tides {
@@ -42,30 +42,31 @@ footer.flex {
     top: 0;
     width: 100%;
     height: 100%;
-}
-
-.tides img {
-    max-width: 25px !important;
-    max-width: 25px !important;
-    position: absolute !important;
-}
-
-.tides svg.tide {
-    transition: top 1s;
-    svg {
-        transition: y 1s;
+    img {
+        max-width: 25px !important;
+        max-width: 25px !important;
+        position: absolute !important;
+        transition: opacity 1s;
     }
-    image {
-        // clip-path: circle(25px at 24px 24px);
-        clip-path: inset(25% 25% round 25% 25%);
+    .background,
+    #tide-level {
+        width: 100%;
+        height: 800px;
+        position: absolute !important;
+        left: 0;
+        top: 0;
     }
-}
-
-.tides svg.background,
-.tides svg.tide {
-    width: 100%;
-    height: 800px;
-    position: absolute !important;
-    left: 0;
-    top: 0;
+    #tide-level {
+        transition: top 1s;
+        svg {
+            transition: y 1s;
+        }
+        image {
+            clip-path: inset(25% 25% round 25% 25%);
+        }
+        .wave {
+            transition: x 0.1s;
+            transition: y 0.1s;
+        }
+    }
 }

@@ -5,11 +5,13 @@ import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages } from './wrappers';
 
 const USE_SVG_IMAGES = 1;
+
 const SAND_COLOR = '#adb9b6';
 const TIDAL_COLOR = '#b8b09b';
-const WAVE_COLOR = '#b2c4d6';
+const OCEAN_COLOR = '#b2c4d6';
+const WAVE_COLOR = '#92b4b6';
 
-const API_SERVER_URL = process.env.API_SERVER_URL || 'http://127.0.0.1:3000/';
+let waves = [];
 
 const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     // dimensions
@@ -45,6 +47,37 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
         ((level - tideMin) / tideRange) *
             (windowHeight - tideTopMargin - tideBottomMargin);
 
+    // waves
+    const Wave = () => {
+        const id = +new Date();
+        let x = windowWidth * (3 * Math.random() - 1);
+        let y = 0;
+        const dx = 20 * (Math.random() - 0.5);
+        return {
+            alive: () => y < windowHeight,
+            animate: () => {
+                x += dx;
+                y += 10;
+            },
+            render: () => (
+                <rect
+                    key={id}
+                    className="wave"
+                    x={x}
+                    y={y}
+                    width={200}
+                    height={20}
+                    fill={WAVE_COLOR}
+                />
+            )
+        };
+    };
+    waves = waves.filter(w => w.alive());
+    if (waves.length < 10 && Math.random() < 1 / 10) {
+        waves.push(Wave());
+    }
+    waves.forEach(w => w.animate());
+
     // svg
     const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
 
@@ -59,7 +92,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                         <stop offset="9.5%" stopColor={SAND_COLOR} />
                         <stop offset="10%" stopColor={TIDAL_COLOR} />
                         <stop offset="20%" stopColor={TIDAL_COLOR} />
-                        <stop offset="20.5%" stopColor={WAVE_COLOR} />
+                        <stop offset="20.5%" stopColor={OCEAN_COLOR} />
                     </linearGradient>
                 </defs>
                 <rect
@@ -85,7 +118,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                         />
                     );
                 })}
-            <svg className="tide">
+            <svg id="tide-level">
                 <defs>
                     <linearGradient
                         id="tidalGradient"
@@ -93,22 +126,22 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     >
                         <stop
                             offset="0%"
-                            stopColor={WAVE_COLOR}
+                            stopColor={OCEAN_COLOR}
                             stopOpacity="0"
                         />
                         <stop
                             offset="0.5%"
-                            stopColor={WAVE_COLOR}
+                            stopColor={OCEAN_COLOR}
                             stopOpacity="0"
                         />
                         <stop
                             offset="10%"
-                            stopColor={WAVE_COLOR}
+                            stopColor={OCEAN_COLOR}
                             stopOpacity="1"
                         />
                         <stop
                             offset="30%"
-                            stopColor={WAVE_COLOR}
+                            stopColor={OCEAN_COLOR}
                             stopOpacity="1"
                         />
                     </linearGradient>
@@ -132,6 +165,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                         fill="url(#tidalGradient)"
                     />
                 </svg>
+                {waves.map(w => w.render())}
             </svg>
             <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>
