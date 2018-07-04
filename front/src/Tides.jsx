@@ -1,27 +1,11 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import withBackground from './background';
 import { setBackground } from './data/actions';
-
-let savedImages = null;
+import { withBackground, withImages } from './wrappers';
 
 const Tides = ({ images, heartbeat }) => {
     const width = 1000;
     const height = 500;
-
-    // images
-    images = images.filter(image => image.tideLevel !== undefined);
-    if (!images.length) {
-        return null;
-    }
-    if (!savedImages) {
-        savedImages = [];
-        while (savedImages.length < 500) {
-            savedImages = savedImages.concat(images);
-        }
-        shuffle(savedImages);
-    }
-    images = savedImages;
 
     // tide levels
     const levels = _.chain(images).map('tideLevel');
@@ -131,9 +115,33 @@ function shuffle(a) {
     return a;
 }
 
-const mapStateToProps = state => ({
-    heartbeat: state.heartbeat,
-    images: state.images
+const replicateArray = (ar, length) => {
+    let result = ar;
+    while (result.length < length) {
+        result = result.concat(ar.slice(length - result.length));
+    }
+    return result;
+};
+
+const memoTable = {};
+const onceish = fn => {
+    let value = memoTable[fn.length];
+    if (!value) memoTable[fn.length] = value = fn();
+    return value;
+};
+
+const mapStateToProps = ({ heartbeat, images }) => ({
+    heartbeat: heartbeat,
+    images:
+        images &&
+        onceish(() =>
+            shuffle(
+                replicateArray(
+                    images.filter(image => image.tideLevel !== undefined),
+                    500
+                )
+            )
+        )
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -143,4 +151,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withBackground('gray')(Tides));
+)(withBackground('gray')(withImages(Tides)));

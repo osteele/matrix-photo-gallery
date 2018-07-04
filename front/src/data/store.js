@@ -10,7 +10,7 @@ export default function setupStore(apiClient) {
         apiClient,
         background: 'white',
         heartbeat: new Date(),
-        images: [],
+        images: null,
         imageSize: 'small',
         sortOrder: 'date-desc'
     };

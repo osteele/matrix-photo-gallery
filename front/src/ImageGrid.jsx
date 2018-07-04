@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
-import withBackground from './background';
 import { setBackground } from './data/actions';
 import { imageGroups, sortFunction } from './sorting';
 import { slugify } from './utils';
+import { withBackground, withImages } from './wrappers';
 
 const ImageCard = ({ image, imageSize }) => (
     <div className="ui card">
@@ -82,4 +82,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withBackground('white')(ImageGrid));
+)(withBackground('white')(withImages(ImageGrid)));
