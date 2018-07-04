@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withImages } from './wrappers';
 
 const Clock = ({ images, heartbeat }) => {
     // images
@@ -69,4 +70,4 @@ const mapStateToProps = state => ({
     heartbeat: state.heartbeat,
     images: state.images
 });
-export default connect(mapStateToProps)(Clock);
+export default connect(mapStateToProps)(withImages(Clock));
