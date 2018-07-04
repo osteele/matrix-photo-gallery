@@ -27,9 +27,9 @@ const NavLinkItem = props => (
     </NavLink>
 );
 
-const App = ({ background }) => (
+const App = ({ background, viewClass }) => (
     <Router>
-        <div className="app" style={{ background }}>
+        <div className={'app ' + viewClass} style={{ background }}>
             <main className="ui container">
                 <nav className="ui tabular menu">
                     <NavLinkItem exact to="/">
@@ -45,8 +45,9 @@ const App = ({ background }) => (
     </Router>
 );
 
-const mapStateToProps = state => ({
-    background: state.background
+const mapStateToProps = ({ background, viewClass }) => ({
+    background,
+    viewClass
 });
 
 export default connect(mapStateToProps)(App);

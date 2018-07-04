@@ -46,3 +46,12 @@ export const sortOrder = (state = {}, action) => {
             return state;
     }
 };
+
+export const viewClass = (state = {}, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_VIEW_CLASS:
+            return action.viewClass;
+        default:
+            return state;
+    }
+};
