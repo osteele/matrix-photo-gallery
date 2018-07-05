@@ -1,11 +1,10 @@
 import { connect } from 'react-redux';
 import { withImages, withViewClass } from './wrappers';
+import { setBackground, setViewClass } from './data/actions';
 
-const Clock = ({ images, heartbeat }) => {
+const Clock = ({ images, heartbeat, setBackground }) => {
     // images
     const n = images.length;
-
-    // _.sortBy(images, ({ timestamp }) => timestamp.hour());
 
     // current hour
     const period = 30 * 1000; // real time for complete cycle
@@ -23,7 +22,9 @@ const Clock = ({ images, heartbeat }) => {
     const cy = sr;
 
     const val = 64 + Math.floor(63 * Math.cos((hour * Math.PI) / 12));
-    const sky = 'rgb(' + [128, 128, 128 + val].join(',') + ')';
+    const skyColor = 'rgb(' + [128, 128, 128 + val].join(',') + ')';
+    // setBackground(skyColor);
+    // document.body.style.backgroundColor = skyColor;
     return (
         <div>
             <h1>Sundial</h1>
@@ -36,7 +37,7 @@ const Clock = ({ images, heartbeat }) => {
                     position: 'relative',
                     width: 2 * sr + 150 + 'px',
                     height: 2 * sr + 150 + 'px',
-                    background: sky
+                    background: skyColor
                 }}
             >
                 <div
@@ -73,11 +74,17 @@ const Clock = ({ images, heartbeat }) => {
     );
 };
 
+const mapDispatchToProps = dispatch => ({
+    setBackground: color => dispatch(setBackground(color)),
+    setViewClass: viewClass => dispatch(setViewClass(viewClass))
+});
+
 const mapStateToProps = state => ({
     heartbeat: state.heartbeat,
     images: state.images
 });
 
-export default connect(mapStateToProps)(
-    withImages(withViewClass('clock')(Clock))
-);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withImages(withViewClass('clock')(Clock)));
