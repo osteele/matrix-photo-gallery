@@ -20,6 +20,8 @@ const SENSOR_DATA_AGE = 10;
 
 let waves = [];
 let lastMouse = null;
+let frozen = true;
+let heartbase = 0;
 
 const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
     // dimensions
@@ -34,21 +36,24 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
 
     // current tide level
     const tidePeriod = 30 * 1000; // complete tide cycle in ms
+    if (frozen) {
+        heartbase = heartbeat;
+    }
     const tideLevel =
         tideMin +
         tideRange *
-            (0.5 + 0.5 * Math.cos((heartbeat * 2 * Math.PI) / tidePeriod));
-
-    // current water level
-    const wavePeriod = 5 * 1000;
-    const waveAmplitude = tideRange / 5;
-    const waterLevel =
-        tideLevel +
-        waveAmplitude * Math.cos((heartbeat * 2 * Math.PI) / wavePeriod);
+            (0.5 +
+                0.5 *
+                    Math.cos(
+                        ((heartbeat - heartbase) * 2 * Math.PI) / tidePeriod
+                    ));
+    const unfreeze = () => {
+        frozen = !frozen;
+    };
 
     // tide level to y position
     const shoalsTop = SKY_HEIGHT + SAND_HEIGHT;
-    const shoalsBottom = windowHeight - OPEN_WATER_HEIGHT;
+    // const shoalsBottom = windowHeight - OPEN_WATER_HEIGHT;
     const shoals_height = windowHeight - shoalsTop - OPEN_WATER_HEIGHT;
     const tide2y = level =>
         shoalsTop + (1 - (level - tideMin) / tideRange) * shoals_height;
@@ -98,7 +103,11 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
 
     return (
         <section>
-            <svg id="tides-container" onMouseMove={onMouseMove}>
+            <svg
+                id="tides-container"
+                onMouseMove={onMouseMove}
+                onMouseDown={unfreeze}
+            >
                 <defs>
                     <Gradients />
                 </defs>
@@ -135,7 +144,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     {images.map((image, i) => {
                         const cx =
                             (i * (windowWidth - image.radius)) / images.length;
-                        const cy = tide2y(image.tideLevel) + 2 * image.radius;
+                        const cy = tide2y(image.tideLevel) + 50;
                         let dr = 0;
                         if (lastMouse) {
                             const d =
@@ -198,9 +207,7 @@ const Gradients = _ => (
     <>
         <linearGradient id="tidalGradient" gradientTransform="rotate(90)">
             <stop offset="0%" stopColor={OCEAN_COLOR} stopOpacity="0" />
-            <stop offset="0.5%" stopColor={OCEAN_COLOR} stopOpacity="0" />
-            <stop offset="10%" stopColor={OCEAN_COLOR} stopOpacity="1" />
-            <stop offset="30%" stopColor={OCEAN_COLOR} stopOpacity="1" />
+            <stop offset="1.4%" stopColor={OCEAN_COLOR} stopOpacity="1" />
         </linearGradient>
         <linearGradient id="beachGradient" gradientTransform="rotate(90)">
             <stop offset="9.5%" stopColor={SAND_COLOR} />
