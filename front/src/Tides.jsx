@@ -56,24 +56,28 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
     // waves
     const Wave = () => {
         const id = +new Date();
+        const dx = 20 * (Math.random() - 0.5);
         let x = windowWidth * (3 * Math.random() - 1);
         let y = windowHeight;
-        const dx = 20 * (Math.random() - 0.5);
+        let color = WAVE_COLOR;
         return {
             active: () => y > 0,
             animate: () => {
                 x += dx;
                 y -= 10;
+                if (y < 50 && Math.random() < 1 / 10) {
+                    color = 'white';
+                }
             },
             render: () => (
                 <rect
                     key={id}
                     className="wave"
                     x={x}
-                    y={y}
+                    y={y - 50}
                     width={350}
                     height={10}
-                    fill={y < 50 ? 'white' : WAVE_COLOR}
+                    fill={color}
                     opacity={Math.max(1, y / 100)}
                 />
             )
@@ -99,14 +103,6 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     <Gradients />
                 </defs>
 
-                <rect
-                    id="background"
-                    x="0"
-                    y="0"
-                    width={windowWidth}
-                    height={windowHeight}
-                    fill="url(#beachGradient)"
-                />
                 <rect id="sky" y="0" height={SKY_HEIGHT} fill={SKY_COLOR} />
                 <rect
                     id="sand"
@@ -119,6 +115,20 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     y={SKY_HEIGHT + SAND_HEIGHT}
                     height={windowHeight}
                     fill={OCEAN_COLOR}
+                />
+                <rect
+                    id="skySandBorder"
+                    className="fullWidth"
+                    y={SKY_HEIGHT - 10}
+                    height="20"
+                    fill="url(#skySandGradient)"
+                />
+                <rect
+                    id="sandOceanBorder"
+                    className="fullWidth"
+                    y={SKY_HEIGHT + SAND_HEIGHT - 10}
+                    height="20"
+                    fill="url(#sandOceanGradient)"
                 />
 
                 <g id="pebbles">
@@ -162,9 +172,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     />
                 </svg>
 
-                <g id="waves" y={0}>
-                    {waves.map(w => w.render())}
-                </g>
+                <svg id="waves">{waves.map(w => w.render())}</svg>
                 {hero && <Hero r={100} {...hero} />}
 
                 {sensorData.age < SENSOR_DATA_AGE &&
@@ -193,6 +201,14 @@ const Gradients = _ => (
             <stop offset="10%" stopColor={TIDAL_COLOR} />
             <stop offset="20%" stopColor={TIDAL_COLOR} />
             <stop offset="20.5%" stopColor={OCEAN_COLOR} />
+        </linearGradient>
+        <linearGradient id="skySandGradient" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={SKY_COLOR} />
+            <stop offset="30%" stopColor={SAND_COLOR} />
+        </linearGradient>
+        <linearGradient id="sandOceanGradient" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={SAND_COLOR} />
+            <stop offset="30%" stopColor={OCEAN_COLOR} />
         </linearGradient>
         <radialGradient id="pebbleGradient">
             <stop offset="0%" stopColor="white" stopOpacity="1" />
