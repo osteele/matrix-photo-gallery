@@ -84,6 +84,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                 <defs>
                     <Gradients />
                 </defs>
+
                 <rect
                     x="0"
                     y="0"
@@ -91,36 +92,6 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     height={windowHeight}
                     fill="url(#beachGradient)"
                 />
-            </svg>
-
-            <svg id="tide-level">
-                <defs>
-                    <linearGradient
-                        id="tidalGradient"
-                        gradientTransform="rotate(90)"
-                    >
-                        <stop
-                            offset="0%"
-                            stopColor={OCEAN_COLOR}
-                            stopOpacity="0"
-                        />
-                        <stop
-                            offset="0.5%"
-                            stopColor={OCEAN_COLOR}
-                            stopOpacity="0"
-                        />
-                        <stop
-                            offset="10%"
-                            stopColor={OCEAN_COLOR}
-                            stopOpacity="1"
-                        />
-                        <stop
-                            offset="30%"
-                            stopColor={OCEAN_COLOR}
-                            stopOpacity="1"
-                        />
-                    </linearGradient>
-                </defs>
 
                 {images.map((image, i) => (
                     <Image
@@ -132,7 +103,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     />
                 ))}
 
-                <svg y={water2y(tideLevel)}>
+                <svg id="tide-level" y={water2y(tideLevel)}>
                     <path
                         d={tideTopPath.join(' ')}
                         fill="url(#tidalGradient)"
@@ -147,6 +118,12 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
 
 const Gradients = _ => (
     <>
+        <linearGradient id="tidalGradient" gradientTransform="rotate(90)">
+            <stop offset="0%" stopColor={OCEAN_COLOR} stopOpacity="0" />
+            <stop offset="0.5%" stopColor={OCEAN_COLOR} stopOpacity="0" />
+            <stop offset="10%" stopColor={OCEAN_COLOR} stopOpacity="1" />
+            <stop offset="30%" stopColor={OCEAN_COLOR} stopOpacity="1" />
+        </linearGradient>
         <linearGradient id="beachGradient" gradientTransform="rotate(90)">
             <stop offset="9.5%" stopColor={SAND_COLOR} />
             <stop offset="10%" stopColor={TIDAL_COLOR} />
