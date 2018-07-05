@@ -31,7 +31,7 @@ footer.flex {
         display: none;
         background: yellow;
         position: absolute;
-        transition: left 1s;
-        transition: top 1s;
+        transition: left 1s linear;
+        transition: top 1s linear;
     }
 }
