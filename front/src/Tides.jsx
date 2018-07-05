@@ -79,13 +79,14 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
 
     return (
-        <section id="tides-container">
-            <svg className="background">
+        <section>
+            <svg id="tides-container">
                 <defs>
                     <Gradients />
                 </defs>
 
                 <rect
+                    className="background"
                     x="0"
                     y="0"
                     width={windowWidth}
@@ -97,9 +98,9 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     <Image
                         image={image}
                         key={image.event_id + i}
-                        x={(i * (windowWidth - image.radius)) / images.length}
-                        y={water2y(image.tideLevel)}
-                        radius={image.radius}
+                        cx={(i * (windowWidth - image.radius)) / images.length}
+                        cy={water2y(image.tideLevel)}
+                        r={image.radius}
                     />
                 ))}
 
@@ -130,7 +131,7 @@ const Gradients = _ => (
             <stop offset="20%" stopColor={TIDAL_COLOR} />
             <stop offset="20.5%" stopColor={OCEAN_COLOR} />
         </linearGradient>
-        <radialGradient id="memoryGradient">
+        <radialGradient id="pebbleGradient">
             <stop offset="0%" stopColor="white" stopOpacity="1" />
             <stop offset="80%" stopColor="black" stopOpacity="0.25" />
             <stop offset="100%" stopColor="black" stopOpacity="0.90" />
@@ -138,21 +139,16 @@ const Gradients = _ => (
     </>
 );
 
-const Image = ({ image, x, y, radius }) => (
+const Image = ({ image, cx, cy, r }) => (
     <>
         <image
-            x={x}
-            y={y}
-            width={radius}
-            height={radius}
+            x={cx - r}
+            y={cy - r}
+            width={r * 2}
+            height={r * 2}
             xlinkHref={image.thumbnail_url}
         />
-        <circle
-            cx={x + radius / 2}
-            cy={y + radius / 2}
-            r={radius / 4}
-            fill="url(#memoryGradient)"
-        />
+        <circle cx={cx} cy={cy} r={r / 2} fill="url(#pebbleGradient)" />
     </>
 );
 
@@ -175,7 +171,7 @@ const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
 
 const addImageRadii = images => {
     images.forEach(image => {
-        image.radius = image.radius = 50 + 50 * Math.random();
+        image.radius = image.radius = 25 + 25 * Math.random();
     });
     return images;
 };
