@@ -81,6 +81,8 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     const onMouseMove = e =>
         (lastMouse = { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
 
+    let hero = null;
+
     return (
         <section>
             <svg id="tides-container" onMouseMove={onMouseMove}>
@@ -108,10 +110,13 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                                 (cx - lastMouse.x) ** 2 +
                                 (cy - lastMouse.y) ** 2;
                             if (d < 500) {
-                                dr = 100 * (1 - d / (2 * 500 ** 2));
+                                dr = 50 * (1 - d / (2 * 500 ** 2));
                                 // dr =
                                 //     (150 * Math.cos((d * 2 * Math.PI) / 100)) /
                                 //     Math.max(1, Math.sqrt(d / 250));
+                                if (!hero || dr > hero.dr) {
+                                    hero = { image, cx, cy, dr };
+                                }
                             }
                         }
                         return (
@@ -135,6 +140,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                 </svg>
 
                 <g id="waves">{waves.map(w => w.render())}</g>
+                {hero && <Hero r={100} {...hero} />}
             </svg>
             <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>
@@ -166,21 +172,35 @@ const Gradients = _ => (
 const Image = ({ image, cx, cy, r, extra }) => (
     <>
         <image
+            className="rounded"
             x={cx - r}
             y={cy - r}
             width={r * 2}
             height={r * 2}
             xlinkHref={image.thumbnail_url}
         />
-        {extra >= 0 && (
-            <circle
-                className="highlight"
-                cx={cx}
-                cy={cy}
-                r={r / 2}
-                fill="url(#pebbleGradient)"
-            />
-        )}
+        <circle
+            className="highlight"
+            cx={cx}
+            cy={cy}
+            r={r}
+            opacity={extra > 0 ? 0.25 : 1}
+            fill="url(#pebbleGradient)"
+        />
+        }
+    </>
+);
+
+const Hero = ({ image, cx, cy, r }) => (
+    <>
+        <image
+            className="hero"
+            x={cx - r}
+            y={cy - r}
+            width={r * 2}
+            height={r * 2}
+            xlinkHref={image.thumbnail_url}
+        />
     </>
 );
 
@@ -203,7 +223,7 @@ const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
 
 const addImageRadii = images => {
     images.forEach(image => {
-        image.radius = image.radius = 25 + 25 * Math.random();
+        image.radius = image.radius = 12 + 13 * Math.random();
     });
     return images;
 };
