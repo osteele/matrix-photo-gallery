@@ -65,7 +65,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
             animate: () => {
                 x += dx;
                 y -= 10;
-                if (y < 50 && Math.random() < 1 / 10) {
+                if (y < 70 && Math.random() < 1 / 10) {
                     color = 'white';
                 }
             },
@@ -172,8 +172,14 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     />
                 </svg>
 
-                <svg id="waves">{waves.map(w => w.render())}</svg>
-                {hero && <Hero r={100} {...hero} />}
+                {!hero && <g id="waves">{waves.map(w => w.render())}</g>}
+                {hero && (
+                    <Hero
+                        r={100}
+                        {...hero}
+                        cx={hero.cx > windowWidth / 2 ? 100 : windowWidth - 100}
+                    />
+                )}
 
                 {sensorData.age < SENSOR_DATA_AGE &&
                     sensorData.l < LIGHT_THRESH && (
