@@ -4,8 +4,6 @@ import { setBackground, setViewClass } from './data/actions';
 import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
-const IMAGE_WIDTH = 50;
-
 const SAND_COLOR = '#adb9b6';
 const TIDAL_COLOR = '#b8b09b';
 const OCEAN_COLOR = '#b2c4d6';
@@ -128,9 +126,9 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     <Image
                         image={image}
                         key={image.event_id + i}
-                        x={(i * (windowWidth - IMAGE_WIDTH)) / images.length}
+                        x={(i * (windowWidth - image.radius)) / images.length}
                         y={water2y(image.tideLevel)}
-                        imageWidth={IMAGE_WIDTH}
+                        radius={image.radius}
                     />
                 ))}
 
@@ -163,19 +161,19 @@ const Gradients = _ => (
     </>
 );
 
-const Image = ({ image, x, y, imageWidth }) => (
+const Image = ({ image, x, y, radius }) => (
     <>
         <image
             x={x}
             y={y}
-            width={imageWidth}
-            height={imageWidth}
+            width={radius}
+            height={radius}
             xlinkHref={image.thumbnail_url}
         />
         <circle
-            cx={x + imageWidth / 2}
-            cy={y + imageWidth / 2}
-            r={imageWidth / 4}
+            cx={x + radius / 2}
+            cy={y + radius / 2}
+            r={radius / 4}
             fill="url(#memoryGradient)"
         />
     </>
@@ -187,14 +185,23 @@ const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
     images:
         images &&
         onceish(() =>
-            shuffle(
-                replicateArray(
-                    images.filter(image => image.tideLevel !== undefined),
-                    500
+            addImageRadii(
+                shuffle(
+                    replicateArray(
+                        images.filter(image => image.tideLevel !== undefined),
+                        500
+                    )
                 )
             )
         )
 });
+
+const addImageRadii = images => {
+    images.forEach(image => {
+        image.radius = image.radius = 50 + 50 * Math.random();
+    });
+    return images;
+};
 
 const mapDispatchToProps = dispatch => ({
     setBackground: color => dispatch(setBackground(color)),
