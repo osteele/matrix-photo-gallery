@@ -110,12 +110,13 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                                 (cx - lastMouse.x) ** 2 +
                                 (cy - lastMouse.y) ** 2;
                             if (d < 500) {
-                                dr = 50 * (1 - d / (2 * 500 ** 2));
+                                const proximity = 1 - d / (2 * 500 ** 2);
+                                dr = 50 * proximity;
                                 // dr =
                                 //     (150 * Math.cos((d * 2 * Math.PI) / 100)) /
                                 //     Math.max(1, Math.sqrt(d / 250));
-                                if (!hero || dr > hero.dr) {
-                                    hero = { image, cx, cy, dr };
+                                if (!hero || proximity > hero.proximity) {
+                                    hero = { image, cx, cy, proximity };
                                 }
                             }
                         }
@@ -191,17 +192,29 @@ const Image = ({ image, cx, cy, r, extra }) => (
     </>
 );
 
-const Hero = ({ image, cx, cy, r }) => (
-    <>
+const Hero = ({ image, cx, cy, r, proximity }) => (
+    <g id="hero">
         <image
-            className="hero"
             x={cx - r}
             y={cy - r}
             width={r * 2}
             height={r * 2}
             xlinkHref={image.thumbnail_url}
+            opacity={proximity}
         />
-    </>
+        <div>some text</div>
+        <foreignObject x={cx - r} y={cy + r} width="200" height="300">
+            <div style={{ background: 'white' }}>
+                <div className="meta">
+                    Posted {image.timestamp.format('h:mm A, ddd MMM Do')}
+                </div>
+                <div className="meta">By {image.sender}</div>
+                {image.tideLevel && (
+                    <div className="meta">Tide Level: {image.tideLevel}m</div>
+                )}
+            </div>
+        </foreignObject>
+    </g>
 );
 
 const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
