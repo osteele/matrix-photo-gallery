@@ -19,8 +19,12 @@ const computeTideLevel = timestamp => {
     if (!day) {
         console.info('missing tide level for', timestamp.format('ll'));
     }
-    // TODO: interpolate
-    return day && day[timestamp.hour()];
+    // TODO: interpolate into next day
+    const s0 = day && day[timestamp.hour()];
+    const s1 = day && day[timestamp.hour() + 1];
+    return s0 === undefined || s1 === undefined
+        ? s0
+        : s0 + (timestamp.minute() / 60) * (s1 - s0);
 };
 
 const decodeImage = image => {
