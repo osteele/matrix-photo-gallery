@@ -60,6 +60,10 @@ footer.flex {
         clip-path: inset(25% 25% round 25% 25%);
         -webkit-clip-path: inset(25% 25% round 25% 25%);
     }
+    image,
+    .highlight {
+        transition: x 1s, y 1s, width 1s, height 1s, r 1s;
+    }
     .wave {
         transition: x 1s linear, y 1s linear;
     }

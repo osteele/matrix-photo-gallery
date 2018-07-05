@@ -11,9 +11,9 @@ export function shuffle(a) {
 }
 
 export const replicateArray = (ar, length) => {
-    let result = ar;
+    let result = [];
     while (result.length < length) {
-        result = result.concat(ar.slice(length - result.length));
+        result = result.concat(ar.slice(0, length - result.length));
     }
     return result;
 };

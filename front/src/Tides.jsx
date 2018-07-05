@@ -10,6 +10,7 @@ const OCEAN_COLOR = '#b2c4d6';
 const WAVE_COLOR = '#92b4b6';
 
 let waves = [];
+let lastMouse = null;
 
 const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     // dimensions
@@ -77,10 +78,12 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
 
     // svg
     const tideTopPath = ['M0 0', 'h', windowWidth, 'v2500', 'H0'];
+    const onMouseMove = e =>
+        (lastMouse = { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
 
     return (
         <section>
-            <svg id="tides-container">
+            <svg id="tides-container" onMouseMove={onMouseMove}>
                 <defs>
                     <Gradients />
                 </defs>
@@ -94,15 +97,35 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     fill="url(#beachGradient)"
                 />
 
-                {images.map((image, i) => (
-                    <Image
-                        image={image}
-                        key={image.event_id + i}
-                        cx={(i * (windowWidth - image.radius)) / images.length}
-                        cy={water2y(image.tideLevel)}
-                        r={image.radius}
-                    />
-                ))}
+                <g id="pebbles">
+                    {images.map((image, i) => {
+                        const cx =
+                            (i * (windowWidth - image.radius)) / images.length;
+                        const cy = water2y(image.tideLevel);
+                        let dr = 0;
+                        if (lastMouse) {
+                            const d =
+                                (cx - lastMouse.x) ** 2 +
+                                (cy - lastMouse.y) ** 2;
+                            if (d < 500) {
+                                dr = 100 * (1 - d / (2 * 500 ** 2));
+                                // dr =
+                                //     (150 * Math.cos((d * 2 * Math.PI) / 100)) /
+                                //     Math.max(1, Math.sqrt(d / 250));
+                            }
+                        }
+                        return (
+                            <Image
+                                image={image}
+                                key={image.event_id + i}
+                                cx={cx}
+                                cy={cy}
+                                r={image.radius + dr}
+                                extra={dr}
+                            />
+                        );
+                    })}
+                </g>
 
                 <svg id="tide-level" y={water2y(tideLevel)}>
                     <path
@@ -110,7 +133,8 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                         fill="url(#tidalGradient)"
                     />
                 </svg>
-                {waves.map(w => w.render())}
+
+                <g id="waves">{waves.map(w => w.render())}</g>
             </svg>
             <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>
@@ -139,7 +163,7 @@ const Gradients = _ => (
     </>
 );
 
-const Image = ({ image, cx, cy, r }) => (
+const Image = ({ image, cx, cy, r, extra }) => (
     <>
         <image
             x={cx - r}
@@ -148,7 +172,15 @@ const Image = ({ image, cx, cy, r }) => (
             height={r * 2}
             xlinkHref={image.thumbnail_url}
         />
-        <circle cx={cx} cy={cy} r={r / 2} fill="url(#pebbleGradient)" />
+        {extra >= 0 && (
+            <circle
+                className="highlight"
+                cx={cx}
+                cy={cy}
+                r={r / 2}
+                fill="url(#pebbleGradient)"
+            />
+        )}
     </>
 );
 
