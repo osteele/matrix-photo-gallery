@@ -4,7 +4,7 @@ import { setBackground, setViewClass } from './data/actions';
 import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
-const USE_SVG_IMAGES = 1;
+const IMAGE_WIDTH = 50;
 
 const SAND_COLOR = '#adb9b6';
 const TIDAL_COLOR = '#b8b09b';
@@ -17,7 +17,6 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     // dimensions
     const windowWidth = document.body.clientWidth;
     const windowHeight = document.body.clientHeight;
-    const imageWidth = 50;
 
     // tide levels
     const imageTideLevels = _.chain(images).map('tideLevel');
@@ -85,15 +84,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
         <section id="tides-container">
             <svg className="background">
                 <defs>
-                    <linearGradient
-                        id="beachGradient"
-                        gradientTransform="rotate(90)"
-                    >
-                        <stop offset="9.5%" stopColor={SAND_COLOR} />
-                        <stop offset="10%" stopColor={TIDAL_COLOR} />
-                        <stop offset="20%" stopColor={TIDAL_COLOR} />
-                        <stop offset="20.5%" stopColor={OCEAN_COLOR} />
-                    </linearGradient>
+                    <Gradients />
                 </defs>
                 <rect
                     x="0"
@@ -103,21 +94,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     fill="url(#beachGradient)"
                 />
             </svg>
-            {!USE_SVG_IMAGES &&
-                images.map((image, i) => {
-                    const level = image.tideLevel;
-                    return (
-                        <Image
-                            image={image}
-                            key={image.event_id + i}
-                            x={(i * (windowWidth - imageWidth)) / images.length}
-                            y={water2y(level)}
-                            opacity={
-                                1 - (level - waterLevel) ** 2 / tideRange ** 2
-                            }
-                        />
-                    );
-                })}
+
             <svg id="tide-level">
                 <defs>
                     <linearGradient
@@ -147,17 +124,15 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
                     </linearGradient>
                 </defs>
 
-                {USE_SVG_IMAGES &&
-                    images.map((image, i) => (
-                        <image
-                            key={image.event_id + i}
-                            x={(i * (windowWidth - imageWidth)) / images.length}
-                            y={water2y(image.tideLevel)}
-                            width={imageWidth}
-                            height={imageWidth}
-                            xlinkHref={image.thumbnail_url}
-                        />
-                    ))}
+                {images.map((image, i) => (
+                    <Image
+                        image={image}
+                        key={image.event_id + i}
+                        x={(i * (windowWidth - IMAGE_WIDTH)) / images.length}
+                        y={water2y(image.tideLevel)}
+                        imageWidth={IMAGE_WIDTH}
+                    />
+                ))}
 
                 <svg y={water2y(tideLevel)}>
                     <path
@@ -172,15 +147,38 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
     );
 };
 
-const Image = ({ image, x, y, opacity }) => (
-    <img
-        className="ui circular image"
-        style={{
-            left: x + 'px',
-            top: y + 'px'
-        }}
-        src={image.thumbnail_url}
-    />
+const Gradients = _ => (
+    <>
+        <linearGradient id="beachGradient" gradientTransform="rotate(90)">
+            <stop offset="9.5%" stopColor={SAND_COLOR} />
+            <stop offset="10%" stopColor={TIDAL_COLOR} />
+            <stop offset="20%" stopColor={TIDAL_COLOR} />
+            <stop offset="20.5%" stopColor={OCEAN_COLOR} />
+        </linearGradient>
+        <radialGradient id="memoryGradient">
+            <stop offset="0%" stopColor="white" stopOpacity="1" />
+            <stop offset="80%" stopColor="black" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="black" stopOpacity="0.90" />
+        </radialGradient>
+    </>
+);
+
+const Image = ({ image, x, y, imageWidth }) => (
+    <>
+        <image
+            x={x}
+            y={y}
+            width={imageWidth}
+            height={imageWidth}
+            xlinkHref={image.thumbnail_url}
+        />
+        <circle
+            cx={x + imageWidth / 2}
+            cy={y + imageWidth / 2}
+            r={imageWidth / 4}
+            fill="url(#memoryGradient)"
+        />
+    </>
 );
 
 const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
