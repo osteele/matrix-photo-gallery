@@ -13,6 +13,7 @@ export default function setupStore(apiClient, audioBaseUrl) {
         heartbeat: new Date(),
         images: null,
         imageSize: 'small',
+        sensorData: {},
         sortOrder: 'date-desc',
         viewClass: null
     };

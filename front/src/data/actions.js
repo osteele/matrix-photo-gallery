@@ -10,6 +10,7 @@ export const ActionTypes = {
     SET_SORT_ORDER: 'SET_SORT_ORDER',
     SET_BACKGROUND: 'SET_BACKGROUND',
     SET_CURRENT_TIME: 'SET_CURRENT_TIME',
+    SET_SENSOR_DATA: 'SET_SENSOR_DATA',
     SET_VIEW_CLASS: 'SET_VIEW_CLASS'
 };
 
@@ -60,6 +61,11 @@ export const setBackground = background => {
 export const setImageSize = imageSize => ({
     type: ActionTypes.SET_IMAGE_SIZE,
     imageSize
+});
+
+export const setSensorData = data => ({
+    type: ActionTypes.SET_SENSOR_DATA,
+    data
 });
 
 export const setSortOrder = sortOrder => ({

@@ -48,6 +48,15 @@ export const sortOrder = (state = {}, action) => {
     }
 };
 
+export const sensorData = (state = {}, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_SENSOR_DATA:
+            return action.data;
+        default:
+            return state;
+    }
+};
+
 export const viewClass = (state = {}, action) => {
     switch (action.type) {
         case ActionTypes.SET_VIEW_CLASS:

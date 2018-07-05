@@ -29,6 +29,8 @@ request = "*"
 pillow = "*"
 boto3 = "*"
 requests = "*"
+pyserial = "*"
 
 [dev-packages]
 autopep8 = "*"
+ipython = "*"

@@ -9,10 +9,13 @@ const TIDAL_COLOR = '#b8b09b';
 const OCEAN_COLOR = '#b2c4d6';
 const WAVE_COLOR = '#92b4b6';
 
+const LIGHT_THRESH = 5;
+const SENSOR_DATA_AGE = 10;
+
 let waves = [];
 let lastMouse = null;
 
-const Tides = ({ audioBaseUrl, heartbeat, images }) => {
+const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
     // dimensions
     const windowWidth = document.body.clientWidth;
     const windowHeight = document.body.clientHeight;
@@ -142,6 +145,14 @@ const Tides = ({ audioBaseUrl, heartbeat, images }) => {
 
                 <g id="waves">{waves.map(w => w.render())}</g>
                 {hero && <Hero r={100} {...hero} />}
+
+                {sensorData.age < SENSOR_DATA_AGE &&
+                    sensorData.l < LIGHT_THRESH && (
+                        <rect
+                            id="scrim"
+                            opacity={1 - sensorData.l / LIGHT_THRESH}
+                        />
+                    )}
             </svg>
             <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>
@@ -217,9 +228,10 @@ const Hero = ({ image, cx, cy, r, proximity }) => (
     </g>
 );
 
-const mapStateToProps = ({ audioBaseUrl, heartbeat, images }) => ({
+const mapStateToProps = ({ audioBaseUrl, heartbeat, images, sensorData }) => ({
     audioBaseUrl,
     heartbeat,
+    sensorData,
     images:
         images &&
         onceish(() =>
