@@ -4,10 +4,16 @@ import { setBackground, setViewClass } from './data/actions';
 import { onceish, replicateArray, shuffle } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
-const SAND_COLOR = '#adb9b6';
+// const SAND_COLOR = '#c0acbc';
+const SAND_COLOR = '#b8b09b';
 const TIDAL_COLOR = '#b8b09b';
-const OCEAN_COLOR = '#b2c4d6';
-const WAVE_COLOR = '#92b4b6';
+const OCEAN_COLOR = '#60674c';
+const WAVE_COLOR = '#aab49d';
+const SKY_COLOR = '#c1d3e6';
+
+const SKY_HEIGHT = 100;
+const SAND_HEIGHT = 75;
+const OPEN_WATER_HEIGHT = 200;
 
 const LIGHT_THRESH = 5;
 const SENSOR_DATA_AGE = 10;
@@ -41,24 +47,23 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
         waveAmplitude * Math.cos((heartbeat * 2 * Math.PI) / wavePeriod);
 
     // tide level to y position
-    const tideTopMargin = 100;
-    const tideBottomMargin = 100;
-    const water2y = level =>
-        tideTopMargin +
-        ((level - tideMin) / tideRange) *
-            (windowHeight - tideTopMargin - tideBottomMargin);
+    const shoalsTop = SKY_HEIGHT + SAND_HEIGHT;
+    const shoalsBottom = windowHeight - OPEN_WATER_HEIGHT;
+    const shoals_height = windowHeight - shoalsTop - OPEN_WATER_HEIGHT;
+    const tide2y = level =>
+        shoalsTop + (1 - (level - tideMin) / tideRange) * shoals_height;
 
     // waves
     const Wave = () => {
         const id = +new Date();
         let x = windowWidth * (3 * Math.random() - 1);
-        let y = 0;
+        let y = windowHeight;
         const dx = 20 * (Math.random() - 0.5);
         return {
-            alive: () => y < windowHeight,
+            active: () => y > 0,
             animate: () => {
                 x += dx;
-                y += 10;
+                y -= 10;
             },
             render: () => (
                 <rect
@@ -66,14 +71,15 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     className="wave"
                     x={x}
                     y={y}
-                    width={200}
-                    height={20}
-                    fill={WAVE_COLOR}
+                    width={350}
+                    height={10}
+                    fill={y < 50 ? 'white' : WAVE_COLOR}
+                    opacity={Math.max(1, y / 100)}
                 />
             )
         };
     };
-    waves = waves.filter(w => w.alive());
+    waves = waves.filter(w => w.active());
     if (waves.length < 10 && Math.random() < 1 / 10) {
         waves.push(Wave());
     }
@@ -94,19 +100,32 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                 </defs>
 
                 <rect
-                    className="background"
+                    id="background"
                     x="0"
                     y="0"
                     width={windowWidth}
                     height={windowHeight}
                     fill="url(#beachGradient)"
                 />
+                <rect id="sky" y="0" height={SKY_HEIGHT} fill={SKY_COLOR} />
+                <rect
+                    id="sand"
+                    y={SKY_HEIGHT}
+                    height={SAND_HEIGHT}
+                    fill={SAND_COLOR}
+                />
+                <rect
+                    id="ocean"
+                    y={SKY_HEIGHT + SAND_HEIGHT}
+                    height={windowHeight}
+                    fill={OCEAN_COLOR}
+                />
 
                 <g id="pebbles">
                     {images.map((image, i) => {
                         const cx =
                             (i * (windowWidth - image.radius)) / images.length;
-                        const cy = water2y(image.tideLevel);
+                        const cy = tide2y(image.tideLevel) + 2 * image.radius;
                         let dr = 0;
                         if (lastMouse) {
                             const d =
@@ -136,14 +155,16 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     })}
                 </g>
 
-                <svg id="tide-level" y={water2y(tideLevel)}>
+                <svg id="tide-level" y={tide2y(tideLevel)}>
                     <path
                         d={tideTopPath.join(' ')}
                         fill="url(#tidalGradient)"
                     />
                 </svg>
 
-                <g id="waves">{waves.map(w => w.render())}</g>
+                <g id="waves" y={0}>
+                    {waves.map(w => w.render())}
+                </g>
                 {hero && <Hero r={100} {...hero} />}
 
                 {sensorData.age < SENSOR_DATA_AGE &&
