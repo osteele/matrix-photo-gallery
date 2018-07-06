@@ -13,10 +13,15 @@ const apiClient = axios.create({
     baseURL: API_SERVER_URL
 });
 
-const store = setupStore(apiClient, API_SERVER_URL + 'static');
+const store = setupStore({
+    apiClient,
+    audioBaseUrl: API_SERVER_URL + 'static',
+    paused: Boolean(window.location.hash.match(/#paused\b/))
+});
 store.dispatch(getEvents());
+
 setInterval(
-    () => store.dispatch(updateTime()),
+    () => store.getState().paused || store.dispatch(updateTime()),
     Math.floor(1000 / HEARTBEAT_HZ)
 );
 

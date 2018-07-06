@@ -11,7 +11,8 @@ export const ActionTypes = {
     SET_BACKGROUND: 'SET_BACKGROUND',
     SET_CURRENT_TIME: 'SET_CURRENT_TIME',
     SET_SENSOR_DATA: 'SET_SENSOR_DATA',
-    SET_VIEW_CLASS: 'SET_VIEW_CLASS'
+    SET_VIEW_CLASS: 'SET_VIEW_CLASS',
+    TOGGLE_PAUSED: 'TOGGLE_PAUSED'
 };
 
 const computeTideLevel = timestamp => {
@@ -79,6 +80,8 @@ export const setViewClass = viewClass => (dispatch, getStore) =>
         type: ActionTypes.SET_VIEW_CLASS,
         viewClass
     });
+
+export const togglePaused = () => ({ type: ActionTypes.TOGGLE_PAUSED });
 
 export const updateTime = () => ({
     type: ActionTypes.SET_CURRENT_TIME,

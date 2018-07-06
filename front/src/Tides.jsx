@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { setBackground, setViewClass } from './data/actions';
+import { setBackground, setViewClass, togglePaused } from './data/actions';
 import { onceish, replicateArray, shuffle, truncFloat } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
-// const SAND_COLOR = '#c0acbc';
 const SAND_COLOR = '#b8b09b';
 const TIDAL_COLOR = '#b8b09b';
 const OCEAN_COLOR = '#60674c';
@@ -15,15 +14,21 @@ const SKY_HEIGHT = 100;
 const SAND_HEIGHT = 75;
 const OPEN_WATER_HEIGHT = 200;
 
-const LIGHT_THRESH = 5;
+const TIDE_PERIOD = 30 * 1000; // complete tide cycle in ms
+
+const LIGHT_THRESH = 15;
 const SENSOR_DATA_AGE = 10;
 
 let waves = [];
 let lastMouse = null;
-let paused = true;
-let heartbase = 0;
 
-const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
+const Tides = ({
+    audioBaseUrl,
+    heartbeat,
+    images,
+    sensorData,
+    togglePaused
+}) => {
     // dimensions
     const windowWidth = document.body.clientWidth;
     const windowHeight = document.body.clientHeight;
@@ -35,21 +40,10 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
     const tideRange = tideMax - tideMin;
 
     // current tide level
-    const tidePeriod = 30 * 1000; // complete tide cycle in ms
-    if (frozen) {
-        heartbase = heartbeat;
-    }
     const tideLevel =
         tideMin +
         tideRange *
-            (0.5 +
-                0.5 *
-                    Math.cos(
-                        ((heartbeat - heartbase) * 2 * Math.PI) / tidePeriod
-                    ));
-    const unfreeze = () => {
-        frozen = !frozen;
-    };
+            (0.5 + 0.5 * Math.cos((heartbeat * 2 * Math.PI) / TIDE_PERIOD));
 
     // tide level to y position
     const shoalsTop = SKY_HEIGHT + SAND_HEIGHT;
@@ -106,7 +100,7 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
             <svg
                 id="tides-container"
                 onMouseMove={onMouseMove}
-                onMouseDown={unfreeze}
+                onMouseDown={togglePaused}
             >
                 <defs>
                     <Gradients />
@@ -313,10 +307,11 @@ const addImageRadii = images => {
 
 const mapDispatchToProps = dispatch => ({
     setBackground: color => dispatch(setBackground(color)),
-    setViewClass: viewClass => dispatch(setViewClass(viewClass))
+    setViewClass: viewClass => dispatch(setViewClass(viewClass)),
+    togglePaused: () => dispatch(togglePaused())
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withImages(withBackground('gray')(withViewClass('tides')(Tides))));
+)(withImages(withViewClass('tides')(Tides)));
