@@ -295,18 +295,13 @@ const mapStateToProps = ({
     images:
         images &&
         onceish(() =>
-            addImageRadii(
-                shuffle(
-                    replicateArray(
-                        images.filter(image => image.tideLevel !== undefined),
-                        500
-                    )
-                )
+            addRandomRadii(
+                images.filter(image => image.tideLevel !== undefined)
             )
         )
 });
 
-const addImageRadii = images => {
+const addRandomRadii = images => {
     images.forEach(image => {
         image.radius = image.radius = 12 + 13 * Math.random();
     });
