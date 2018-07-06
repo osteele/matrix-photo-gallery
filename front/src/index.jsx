@@ -13,6 +13,7 @@ import setupStore from './data/store';
 
 const HEARTBEAT_HZ = 10;
 const API_SERVER_URL = process.env.API_SERVER_URL || 'http://127.0.0.1:5000/';
+const AUDIO_BASE_URL = process.env.AUDIO_BASE_URL || API_SERVER_URL + 'static';
 
 const apiClient = axios.create({
     baseURL: API_SERVER_URL
@@ -20,7 +21,7 @@ const apiClient = axios.create({
 
 const store = setupStore({
     apiClient,
-    audioBaseUrl: API_SERVER_URL + 'static',
+    audioBaseUrl: AUDIO_BASE_URL,
     paused: Boolean(window.location.hash.match(/[#&]paused\b/))
 });
 
