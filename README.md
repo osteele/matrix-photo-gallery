@@ -22,10 +22,11 @@ single id). Run `pipenv run list_rooms.py` to list the room ids.
 Set `MONGODB_URI` to a MongoDB connection URL, *or* install a local MongoDB
 instance.
 
-`pipenv run import-events` imports images from Matrix events.
+`pipenv run import-images` imports images from Matrix events.
 
-Optional: `pipenv run make-small-thumbnails` creates smaller thumbnails, and uploads
-them to the S3 bucket named `BUCKET_NAME`.
+Optional: `pipenv run make-small-thumbnails` creates smaller thumbnails than the
+Matrix thumbnails — which are still pretty large — and uploads them to the S3
+bucket named `BUCKET_NAME`.
 
 ### Run
 
