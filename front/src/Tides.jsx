@@ -142,8 +142,12 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
 
                 <g id="pebbles">
                     {images.map((image, i) => {
+                        // const cx =
+                        // (i * (windowWidth - image.radius)) / images.length;
+                        const ts = image.timestamp;
                         const cx =
-                            (i * (windowWidth - image.radius)) / images.length;
+                            (windowWidth - 2 * image.radius) *
+                            (ts.hour() / 24 + ts.minute() / 24 / 60);
                         const cy = tide2y(image.tideLevel) + 50;
                         let dr = 0;
                         if (lastMouse) {
