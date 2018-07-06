@@ -27,11 +27,12 @@ const Tides = ({
     heartbeat,
     images,
     sensorData,
-    togglePaused
+    togglePaused,
+    windowSize
 }) => {
     // dimensions
-    const windowWidth = document.body.clientWidth;
-    const windowHeight = document.body.clientHeight;
+    const windowWidth = windowSize.width;
+    const windowHeight = windowSize.height;
 
     // tide levels
     const imageTideLevels = _.chain(images).map('tideLevel');
@@ -280,10 +281,17 @@ const Hero = ({ image, cx, cy, r, proximity }) => (
     </g>
 );
 
-const mapStateToProps = ({ audioBaseUrl, heartbeat, images, sensorData }) => ({
+const mapStateToProps = ({
+    audioBaseUrl,
+    heartbeat,
+    images,
+    sensorData,
+    windowSize
+}) => ({
     audioBaseUrl,
     heartbeat,
     sensorData,
+    windowSize,
     images:
         images &&
         onceish(() =>

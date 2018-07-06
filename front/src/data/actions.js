@@ -12,6 +12,7 @@ export const ActionTypes = {
     SET_CURRENT_TIME: 'SET_CURRENT_TIME',
     SET_SENSOR_DATA: 'SET_SENSOR_DATA',
     SET_VIEW_CLASS: 'SET_VIEW_CLASS',
+    SET_WINDOW_SIZE: 'SET_WINDOW_SIZE',
     TOGGLE_PAUSED: 'TOGGLE_PAUSED'
 };
 
@@ -86,4 +87,9 @@ export const togglePaused = () => ({ type: ActionTypes.TOGGLE_PAUSED });
 export const updateTime = () => ({
     type: ActionTypes.SET_CURRENT_TIME,
     timestamp: new Date()
+});
+
+export const setWindowSize = size => ({
+    type: ActionTypes.SET_WINDOW_SIZE,
+    size
 });

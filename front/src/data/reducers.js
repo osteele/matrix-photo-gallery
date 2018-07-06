@@ -74,3 +74,17 @@ export const viewClass = (state = null, action) => {
             return state;
     }
 };
+
+export const windowSize = (state = null, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_WINDOW_SIZE:
+            return action.size;
+        default:
+            return (
+                state || {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                }
+            );
+    }
+};
