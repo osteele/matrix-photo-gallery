@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { setBackground, setViewClass } from './data/actions';
-import { onceish, replicateArray, shuffle } from './utils';
+import { onceish, replicateArray, shuffle, truncFloat } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
 // const SAND_COLOR = '#c0acbc';
@@ -20,7 +20,7 @@ const SENSOR_DATA_AGE = 10;
 
 let waves = [];
 let lastMouse = null;
-let frozen = true;
+let paused = true;
 let heartbase = 0;
 
 const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
@@ -263,7 +263,6 @@ const Hero = ({ image, cx, cy, r, proximity }) => (
             xlinkHref={image.thumbnail_url}
             opacity={proximity}
         />
-        <div>some text</div>
         <foreignObject x={cx - r} y={cy + r} width="200" height="300">
             <div style={{ background: 'white' }}>
                 <div className="meta">
@@ -271,7 +270,9 @@ const Hero = ({ image, cx, cy, r, proximity }) => (
                 </div>
                 <div className="meta">By {image.sender}</div>
                 {image.tideLevel && (
-                    <div className="meta">Tide Level: {image.tideLevel}m</div>
+                    <div className="meta">
+                        Tide Level: {truncFloat(image.tideLevel)}m
+                    </div>
                 )}
             </div>
         </foreignObject>

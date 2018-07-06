@@ -3,7 +3,7 @@ import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
 import { setBackground, setViewClass } from './data/actions';
 import { imageGroups, sortFunction } from './sorting';
-import { slugify } from './utils';
+import { slugify, truncFloat } from './utils';
 import { withBackground, withImages, withViewClass } from './wrappers';
 
 const ImageCard = ({ image, imageSize }) => (
@@ -22,7 +22,9 @@ const ImageCard = ({ image, imageSize }) => (
             </div>
             <div className="meta">By {image.sender}</div>
             {image.tideLevel && (
-                <div className="meta">Tide Level: {image.tideLevel}m</div>
+                <div className="meta">
+                    Tide Level: {truncFloat(image.tideLevel)}m
+                </div>
             )}
         </div>
     </div>

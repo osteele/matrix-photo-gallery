@@ -24,3 +24,5 @@ export const onceish = fn => {
     if (!value) memoTable[fn.length] = value = fn();
     return value;
 };
+
+export const truncFloat = n => String(n).replace(/(\.\d{1})\d+/, '$1');
