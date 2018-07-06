@@ -21,7 +21,7 @@ const apiClient = axios.create({
 const store = setupStore({
     apiClient,
     audioBaseUrl: API_SERVER_URL + 'static',
-    paused: Boolean(window.location.hash.match(/#paused\b/))
+    paused: Boolean(window.location.hash.match(/[#&]paused\b/))
 });
 
 store.dispatch(getEvents());

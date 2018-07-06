@@ -1,8 +1,10 @@
 import _ from 'lodash';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { setBackground, setViewClass, togglePaused } from './data/actions';
-import { onceish, replicateArray, shuffle, truncFloat } from './utils';
-import { withBackground, withImages, withViewClass } from './wrappers';
+import { time2tide } from './data/tides';
+import { onceish, truncFloat } from './utils';
+import { withImages, withViewClass } from './wrappers';
 
 const SAND_COLOR = '#b8b09b';
 const TIDAL_COLOR = '#b8b09b';
@@ -41,17 +43,20 @@ const Tides = ({
     const tideRange = tideMax - tideMin;
 
     // current tide level
-    const tideLevel =
-        tideMin +
-        tideRange *
-            (0.5 + 0.5 * Math.cos((heartbeat * 2 * Math.PI) / TIDE_PERIOD));
+    const tideLevel = window.document.location.hash.match(/[#&]demo\b/)
+        ? tideMin +
+          tideRange *
+              (0.5 + 0.5 * Math.cos((heartbeat * 2 * Math.PI) / TIDE_PERIOD))
+        : time2tide(moment());
 
     // tide level to y position
-    const shoalsTop = SKY_HEIGHT + SAND_HEIGHT;
-    // const shoalsBottom = windowHeight - OPEN_WATER_HEIGHT;
-    const shoals_height = windowHeight - shoalsTop - OPEN_WATER_HEIGHT;
+    const tideMarkTop = SKY_HEIGHT + SAND_HEIGHT;
+    const intertidalHeight = windowHeight - tideMarkTop - OPEN_WATER_HEIGHT;
     const tide2y = level =>
-        shoalsTop + (1 - (level - tideMin) / tideRange) * shoals_height;
+        tideMarkTop + (1 - (level - tideMin) / tideRange) * intertidalHeight;
+    const inverseTide2y = level =>
+        tideMarkTop + ((level - tideMin) / tideRange) * intertidalHeight;
+    const tideTop = tide2y(tideLevel);
 
     // waves
     const Wave = () => {
@@ -65,7 +70,7 @@ const Tides = ({
             animate: () => {
                 x += dx;
                 y -= 10;
-                if (y < 70 && Math.random() < 1 / 10) {
+                if (y < 30 && Math.random() < 1 / 10) {
                     color = 'white';
                 }
             },
@@ -74,7 +79,7 @@ const Tides = ({
                     key={id}
                     className="wave"
                     x={x}
-                    y={y - 50}
+                    y={y}
                     width={350}
                     height={10}
                     fill={color}
@@ -137,13 +142,12 @@ const Tides = ({
 
                 <g id="pebbles">
                     {images.map((image, i) => {
-                        // const cx =
-                        // (i * (windowWidth - image.radius)) / images.length;
                         const ts = image.timestamp;
                         const cx =
+                            image.radius +
                             (windowWidth - 2 * image.radius) *
-                            (ts.hour() / 24 + ts.minute() / 24 / 60);
-                        const cy = tide2y(image.tideLevel) + 50;
+                                (ts.hour() / 24 + ts.minute() / 24 / 60);
+                        const cy = inverseTide2y(image.tideLevel) + 50;
                         let dr = 0;
                         if (lastMouse) {
                             const d =
@@ -173,16 +177,16 @@ const Tides = ({
                     })}
                 </g>
 
-                <svg id="tide-level" y={tide2y(tideLevel)}>
+                <svg id="tide-level" y={tideTop}>
                     <path
                         d={tideTopPath.join(' ')}
                         fill="url(#tidalGradient)"
                     />
                 </svg>
 
-                <g id="waves" opacity={hero ? 0 : 1}>
+                <svg id="waves" opacity={hero ? 0 : 1} y={tideTop - 150}>
                     {waves.map(w => w.render())}
-                </g>
+                </svg>
 
                 {hero && (
                     <Hero
