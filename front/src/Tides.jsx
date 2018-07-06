@@ -185,7 +185,10 @@ const Tides = ({ audioBaseUrl, heartbeat, images, sensorData }) => {
                     />
                 </svg>
 
-                {!hero && <g id="waves">{waves.map(w => w.render())}</g>}
+                <g id="waves" opacity={hero ? 0 : 1}>
+                    {waves.map(w => w.render())}
+                </g>
+
                 {hero && (
                     <Hero
                         r={100}
