@@ -6,8 +6,8 @@ import App from './App';
 import {
     getEvents,
     setSensorData,
-    updateTime,
-    setWindowSize
+    setWindowSize,
+    updateTime
 } from './data/actions';
 import setupStore from './data/store';
 
@@ -32,15 +32,15 @@ setInterval(
     Math.floor(1000 / HEARTBEAT_HZ)
 );
 
-false &&
-    setInterval(
-        () =>
-            apiClient
-                .get('/sensor')
-                .catch(err => console.error(err))
-                .then(({ data }) => store.dispatch(setSensorData(data))),
-        Math.floor(1000 / 10)
-    );
+const WEBSOCKET_URL = API_SERVER_URL.replace(/^http/, 'ws') + 'sensor_data';
+const sensorDataSocket = new WebSocket(WEBSOCKET_URL);
+sensorDataSocket.onerror = err => {
+    console.error('WebSocket error', err);
+};
+sensorDataSocket.onmessage = event => {
+    const data = JSON.parse(event.data);
+    store.dispatch(setSensorData(data, new Date()));
+};
 
 window.addEventListener('resize', () => {
     store.dispatch(

@@ -49,9 +49,10 @@ export const setImageSize = imageSize => ({
     imageSize
 });
 
-export const setSensorData = data => ({
+export const setSensorData = (data, timestamp) => ({
     type: ActionTypes.SET_SENSOR_DATA,
-    data
+    data,
+    timestamp
 });
 
 export const setSortOrder = sortOrder => ({

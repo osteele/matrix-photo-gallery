@@ -19,7 +19,7 @@ const OPEN_WATER_HEIGHT = 200;
 const TIDE_PERIOD = 30 * 1000; // complete tide cycle in ms
 
 const LIGHT_THRESH = 15;
-const SENSOR_DATA_AGE = 10;
+const SENSOR_DATA_AGE = 10 * 1000;
 
 let waves = [];
 let lastMouse = null;
@@ -35,6 +35,13 @@ const Tides = ({
     // dimensions
     const windowWidth = windowSize.width;
     const windowHeight = windowSize.height;
+
+    // environmental data
+    const validSensorData = new Date() - sensorData.timestamp < SENSOR_DATA_AGE;
+    const scrimOpacity =
+        validSensorData && sensorData.l < LIGHT_THRESH
+            ? 1 - sensorData.l / LIGHT_THRESH
+            : 0;
 
     // tide levels
     const imageTideLevels = _.chain(images).map('tideLevel');
@@ -196,13 +203,7 @@ const Tides = ({
                     />
                 )}
 
-                {sensorData.age < SENSOR_DATA_AGE &&
-                    sensorData.l < LIGHT_THRESH && (
-                        <rect
-                            id="scrim"
-                            opacity={1 - sensorData.l / LIGHT_THRESH}
-                        />
-                    )}
+                {scrimOpacity > 0 && <rect id="scrim" opacity={scrimOpacity} />}
             </svg>
             <audio autoPlay loop src={audioBaseUrl + '/waves-audio.m4a'} />
         </section>

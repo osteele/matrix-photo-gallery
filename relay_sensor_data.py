@@ -1,29 +1,39 @@
 import json
 import os
 import re
-
-import requests
+from random import randrange
 
 import serial.tools.list_ports
+from websocket import create_connection
 
-SENSOR_SERVER_NETLOC = os.environ.get('SENSOR_SERVER_NETLOC', '127.0.0.1:5000')
+SENSOR_SERVER_NETLOC = os.environ.get("SENSOR_SERVER_NETLOC", "127.0.0.1:5000")
+WEBSOCKET_URI = f"ws://{SENSOR_SERVER_NETLOC}/sensor_data"
 
-port = next(p for p in serial.tools.list_ports.comports()
-            if p.pid == 516 and p.vid == 3368)
-print(f"Listening on USB {port}")
+print(f"Sending to WebSocket port {WEBSOCKET_URI}")
+ws = create_connection(WEBSOCKET_URI)
 
-ser = serial.Serial(port.device)
-ser.baudrate = 115200
+port = next(
+    (p for p in serial.tools.list_ports.comports() if p.pid == 516 and p.vid == 3368),
+    None,
+)
+if port:
+    ser = serial.Serial(port.device)
+    ser.baudrate = 115200
+    print(f"Listening on USB {port}")
+else:
+    print("No USB port found. Sending one-shot test data.")
+
 while True:
-    line = ser.readline().decode()
-    m = re.match(r'(\w+)=(-?\d+)', line)
+    line = ser.readline().decode() if port else f"l={randrange(10)}"
+    m = re.match(r"(\w+)[:=](-?\d+(?:\.\d*)?)", line)
     if m:
         key, value = m.groups()
         key = key.lower()
-        print(f'{key}={value}')
-        try:
-            requests.post(f'http://{SENSOR_SERVER_NETLOC}/sensor', data=json.dumps({key: value}))
-        except requests.exceptions.ConnectionError as err:
-            print(err)
+        value = float(value) if "." in value else int(value)
+        print(f"{key}={value}")
+        data = json.dumps({key: value})
+        ws.send(data)
     else:
-        print('unmatched', line.strip())
+        print("unmatched", line.strip())
+    if not port:
+        break

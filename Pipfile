@@ -8,6 +8,7 @@ python_full_version = "3.6.5"
 
 [scripts]
 server = "env FLASK_APP=back:app FLASK_ENV=development flask run"
+socket-server = "env FLASK_ENV=development gunicorn -k flask_sockets.worker back:app -b :5000"
 client = "bash -c 'cd front && yarn start'"
 deploy-backend = "git push heroku +master"
 deploy-frontend = "bash -c 'cd front && yarn deploy'"
@@ -30,6 +31,8 @@ pillow = "*"
 boto3 = "*"
 requests = "*"
 pyserial = "*"
+flask-sockets = "*"
+redis = "*"
 
 [dev-packages]
 autopep8 = "*"

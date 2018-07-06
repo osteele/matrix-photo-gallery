@@ -51,7 +51,7 @@ export const paused = (state = {}, action) => {
 export const sensorData = (state = {}, action) => {
     switch (action.type) {
         case ActionTypes.SET_SENSOR_DATA:
-            return action.data;
+            return { ...state, ...action.data, timestamp: action.timestamp };
         default:
             return state;
     }
