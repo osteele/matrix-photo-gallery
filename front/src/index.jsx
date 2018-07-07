@@ -32,14 +32,15 @@ setInterval(
     Math.floor(1000 / HEARTBEAT_HZ)
 );
 
-setInterval(
-    () =>
-        apiClient
-            .get('/sensor')
-            .catch(err => console.error(err))
-            .then(({ data }) => store.dispatch(setSensorData(data))),
-    Math.floor(1000 / 10)
-);
+false &&
+    setInterval(
+        () =>
+            apiClient
+                .get('/sensor')
+                .catch(err => console.error(err))
+                .then(({ data }) => store.dispatch(setSensorData(data))),
+        Math.floor(1000 / 10)
+    );
 
 window.addEventListener('resize', () => {
     store.dispatch(
