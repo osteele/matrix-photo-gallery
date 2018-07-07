@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { setBackground, setViewClass } from './data/actions';
 import { imageGroups, sortFunction } from './sorting';
 import { slugify, truncFloat } from './utils';
-import { withBackground, withImages, withViewClass } from './wrappers';
+import { withImages } from './wrappers';
 
 const ImageCard = ({ image, imageSize }) => (
     <div className="ui card">
@@ -85,4 +85,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withBackground('white')(withImages(withViewClass('gallery')(ImageGrid))));
+)(withImages(ImageGrid));
