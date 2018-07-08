@@ -4,6 +4,8 @@ import Clock from './Clock';
 import Gallery from './Gallery';
 import './site.scss';
 
+const TIDE_APP_URL = process.env.TIDE_APP_URL;
+
 const Footer = () => (
     <footer className="ui vertical footer segment">
         <div className="ui center aligned container">
@@ -31,6 +33,14 @@ const App = ({ background, viewClass }) => (
                 </nav>
                 <Route exact path="/" component={Gallery} />
                 <Route path="/clock" component={Clock} />
+                {TIDE_APP_URL && (
+                    <Route
+                        path="/tides"
+                        render={() => {
+                            window.location.href = TIDE_APP_URL;
+                        }}
+                    />
+                )}
             </main>
             <Footer />
         </div>
