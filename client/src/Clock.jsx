@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import { withImages, withViewClass } from './wrappers';
-import { setBackground, setViewClass } from './data/actions';
+import { withImages } from './wrappers';
+import {} from './data/actions';
 
-const Clock = ({ images, heartbeat, setBackground }) => {
+const Clock = ({ images, heartbeat }) => {
     // images
     const n = images.length;
 
@@ -23,7 +23,6 @@ const Clock = ({ images, heartbeat, setBackground }) => {
 
     const val = 64 + Math.floor(63 * Math.cos((hour * Math.PI) / 12));
     const skyColor = 'rgb(' + [128, 128, 128 + val].join(',') + ')';
-    // setBackground(skyColor);
     // document.body.style.backgroundColor = skyColor;
     return (
         <div>
@@ -74,17 +73,9 @@ const Clock = ({ images, heartbeat, setBackground }) => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    setBackground: color => dispatch(setBackground(color)),
-    setViewClass: viewClass => dispatch(setViewClass(viewClass))
-});
-
 const mapStateToProps = state => ({
     heartbeat: state.heartbeat,
     images: state.images
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withImages(withViewClass('clock')(Clock)));
+export default connect(mapStateToProps)(withImages(Clock));

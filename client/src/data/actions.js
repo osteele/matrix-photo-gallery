@@ -33,14 +33,6 @@ export const getEvents = () => (dispatch, getStore) =>
             })
         );
 
-export const setBackground = background => {
-    document.body.style.backgroundColor = background;
-    return {
-        type: ActionTypes.SET_BACKGROUND,
-        background
-    };
-};
-
 export const setImageSize = imageSize => ({
     type: ActionTypes.SET_IMAGE_SIZE,
     imageSize
@@ -50,13 +42,6 @@ export const setSortOrder = sortOrder => ({
     type: ActionTypes.SET_SORT_ORDER,
     sortOrder
 });
-
-export const setViewClass = viewClass => (dispatch, getStore) =>
-    getStore().viewClass === viewClass ||
-    dispatch({
-        type: ActionTypes.SET_VIEW_CLASS,
-        viewClass
-    });
 
 export const updateTime = () => ({
     type: ActionTypes.SET_CURRENT_TIME,

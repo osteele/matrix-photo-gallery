@@ -1,8 +1,3 @@
-export const withBackground = color => WrappedComponent => props => {
-    props.setBackground(color);
-    return <WrappedComponent {...props} />;
-};
-
 export const withImages = WrappedComponent => props =>
     props.images ? (
         <WrappedComponent {...props} />
@@ -11,8 +6,3 @@ export const withImages = WrappedComponent => props =>
             <p />
         </div>
     );
-
-export const withViewClass = viewClass => WrappedComponent => props => {
-    props.setViewClass(viewClass);
-    return <WrappedComponent {...props} />;
-};
