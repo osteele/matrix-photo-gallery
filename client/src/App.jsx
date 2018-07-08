@@ -25,7 +25,7 @@ const App = ({ background, viewClass }) => (
     <Router>
         <div className={'app ' + viewClass} style={{ background }}>
             <main className="ui container">
-                <nav className="ui tabular menu">
+                <nav id="app-menu" className="ui tabular menu">
                     <NavLinkItem exact to="/">
                         Gallery
                     </NavLinkItem>
