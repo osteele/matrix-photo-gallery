@@ -60,6 +60,14 @@ If `SERVE_LOCAL_IMAGES` is set *and* `pipenv run make-small-thumbnails` has been
 run, the server will direct the client to use small thumbnail images from the
 local filesystem. This is intended for use in local development.
 
+## Related
+
+This repository originally held the Tidal Memories exhibit piece, that now lives
+at <https://github.com/osteele/tidal-memories>. As an experiment, and in order
+to simplify this repository back to just a Riot image gallery, I've used `git
+filter-branch` to unwind the changes for that piece from this repo. The original
+history is in the `original` branch of this repo.
+
 ## License
 
 MIT
