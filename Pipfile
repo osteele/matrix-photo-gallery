@@ -31,4 +31,3 @@ boto3 = "*"
 requests = "*"
 
 [dev-packages]
-autopep8 = "*"
