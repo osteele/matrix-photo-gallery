@@ -25,6 +25,14 @@ footer.flex {
     display: none;
 }
 
+.ui.card {
+    cursor: zoom-in;
+}
+
+.detail .ui.card {
+    cursor: zoom-out;
+}
+
 .clock {
     img {
         transition: opacity 1s;

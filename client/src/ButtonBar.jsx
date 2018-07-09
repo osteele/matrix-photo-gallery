@@ -20,19 +20,19 @@ const ButtonBar = ({ setImageSize, setSortOrder }) => (
         <div className="ui icon buttons">
             <button
                 className="ui button"
-                title="Oldest First"
-                onClick={() => setSortOrder('date-asc')}
-            >
-                <i className="sort numeric up icon" />
-                Oldest First
-            </button>
-            <button
-                className="ui button"
                 title="Most Recent First"
                 onClick={() => setSortOrder('date-desc')}
             >
                 <i className="sort numeric down icon" />
                 Most Recent First
+            </button>
+            <button
+                className="ui button"
+                title="Oldest First"
+                onClick={() => setSortOrder('date-asc')}
+            >
+                <i className="sort numeric up icon" />
+                Oldest First
             </button>
             <button
                 className="ui button"

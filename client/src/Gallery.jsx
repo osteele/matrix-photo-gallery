@@ -5,7 +5,7 @@ import { ImageCard, ImageGrid } from './ImageGrid';
 
 const Gallery = ({ image, clearCurrentImage }) =>
     image ? (
-        <div>
+        <div className="detail">
             <div className="ui breadcrumb">
                 <a className="section" onClick={clearCurrentImage}>
                     Home
