@@ -39,7 +39,7 @@ $ pipenv run server
 or:
 
 ```shell
-env FLASK_APP=back:app FLASK_ENV=development flask run
+env FLASK_APP=server:app FLASK_ENV=development flask run
 ```
 
 Run the front end (client):
@@ -51,7 +51,7 @@ $ pipenv run client
 or:
 
 ```shell
-$ cd front
+$ cd client
 $ yarn install
 $ yarn start
 ```
