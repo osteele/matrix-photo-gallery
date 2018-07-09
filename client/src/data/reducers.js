@@ -2,7 +2,7 @@ import { ActionTypes } from './actions';
 
 export const apiClient = (state = {}) => state;
 
-export const background = (state = {}, action) => {
+export const background = (state = 'white', action) => {
     switch (action.type) {
         case ActionTypes.SET_BACKGROUND:
             return action.background;
@@ -11,16 +11,25 @@ export const background = (state = {}, action) => {
     }
 };
 
-export const heartbeat = (state = {}, action) => {
+export const currentImage = (state = null, action) => {
     switch (action.type) {
-        case ActionTypes.SET_CURRENT_TIME:
-            return action.timestamp;
+        case ActionTypes.SET_CURRENT_IMAGE:
+            return action.image;
         default:
             return state;
     }
 };
 
-export const images = (state = {}, action) => {
+export const heartbeat = (state = null, action) => {
+    switch (action.type) {
+        case ActionTypes.SET_CURRENT_TIME:
+            return action.timestamp;
+        default:
+            return state || new Date();
+    }
+};
+
+export const images = (state = null, action) => {
     switch (action.type) {
         case ActionTypes.SET_IMAGES:
             return action.data;
@@ -29,7 +38,7 @@ export const images = (state = {}, action) => {
     }
 };
 
-export const imageSize = (state = {}, action) => {
+export const imageSize = (state = 'small', action) => {
     switch (action.type) {
         case ActionTypes.SET_IMAGE_SIZE:
             return action.imageSize;
@@ -38,7 +47,7 @@ export const imageSize = (state = {}, action) => {
     }
 };
 
-export const sortOrder = (state = {}, action) => {
+export const sortOrder = (state = 'date-desc', action) => {
     switch (action.type) {
         case ActionTypes.SET_SORT_ORDER:
             return action.sortOrder;
@@ -47,7 +56,7 @@ export const sortOrder = (state = {}, action) => {
     }
 };
 
-export const viewClass = (state = {}, action) => {
+export const viewClass = (state = null, action) => {
     switch (action.type) {
         case ActionTypes.SET_VIEW_CLASS:
             return action.viewClass;

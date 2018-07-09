@@ -6,9 +6,12 @@ export const ActionTypes = {
     SET_IMAGES: 'SET_IMAGES',
     SET_IMAGE_SIZE: 'SET_IMAGE_SIZE',
     SET_SORT_ORDER: 'SET_SORT_ORDER',
+
     SET_BACKGROUND: 'SET_BACKGROUND',
     SET_CURRENT_TIME: 'SET_CURRENT_TIME',
-    SET_VIEW_CLASS: 'SET_VIEW_CLASS'
+    SET_VIEW_CLASS: 'SET_VIEW_CLASS',
+
+    SET_CURRENT_IMAGE: 'SET_CURRENT_IMAGE'
 };
 
 const decodeImage = image => {
@@ -41,6 +44,11 @@ export const setImageSize = imageSize => ({
 export const setSortOrder = sortOrder => ({
     type: ActionTypes.SET_SORT_ORDER,
     sortOrder
+});
+
+export const setCurrentImage = image => ({
+    type: ActionTypes.SET_CURRENT_IMAGE,
+    image
 });
 
 export const updateTime = () => ({

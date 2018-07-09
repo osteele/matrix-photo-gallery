@@ -1,17 +1,22 @@
 import _ from 'lodash';
 import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
+import { setCurrentImage } from './data/actions.js';
 import { imageGroups, sortFunction } from './sorting';
 import { slugify, truncFloat } from './utils';
 import { withImages } from './wrappers';
 
-const ImageCard = ({ image, imageSize }) => (
-    <div className="ui card">
+export const ImageCard = ({ image, imageSize, onClick }) => (
+    <div className="ui card" onClick={onClick}>
         <div className="image">
             <LazyLoad key={image.event_id}>
                 <img
                     className={'ui image ' + imageSize}
-                    src={image.thumbnail_url}
+                    src={
+                        imageSize === 'massive'
+                            ? image.image_url
+                            : image.thumbnail_url
+                    }
                 />
             </LazyLoad>
         </div>
@@ -29,7 +34,12 @@ const ImageCard = ({ image, imageSize }) => (
     </div>
 );
 
-const ImageGrid = ({ images, imageSize, sortOrder }) => {
+const ImageGridComponent = ({
+    images,
+    imageSize,
+    sortOrder,
+    setCurrentImage
+}) => {
     const groups = imageGroups(images, sortOrder);
     return (
         <div>
@@ -60,6 +70,7 @@ const ImageGrid = ({ images, imageSize, sortOrder }) => {
                                     key={image.event_id}
                                     image={image}
                                     imageSize={imageSize}
+                                    onClick={() => setCurrentImage(image)}
                                 />
                             )
                         )}
@@ -76,4 +87,11 @@ const mapStateToProps = state => ({
     sortOrder: state.sortOrder
 });
 
-export default connect(mapStateToProps)(withImages(ImageGrid));
+const mapDispatchToProps = dispatch => ({
+    setCurrentImage: image => dispatch(setCurrentImage(image))
+});
+
+export const ImageGrid = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withImages(ImageGridComponent));
