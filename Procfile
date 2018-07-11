@@ -1,1 +1,1 @@
-web: env FLASK_APP=back:app gunicorn back:app
+web: env FLASK_APP=server:app gunicorn server:app
