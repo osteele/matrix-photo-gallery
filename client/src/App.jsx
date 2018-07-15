@@ -47,4 +47,4 @@ const App = () => (
     </Router>
 );
 
-export default App;
+export const App;
