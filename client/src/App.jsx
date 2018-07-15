@@ -1,10 +1,5 @@
-import { connect } from 'react-redux';
-import { BrowserRouter as Router, NavLink, Route } from 'react-router-dom';
-import Clock from './Clock';
 import Gallery from './Gallery';
 import './site.scss';
-
-const TIDE_APP_URL = process.env.TIDE_APP_URL;
 
 const Footer = () => (
     <footer className="ui vertical footer segment">
@@ -15,10 +10,13 @@ const Footer = () => (
     </footer>
 );
 
-const NavLinkItem = props => (
-    <NavLink className="item" activeClassName="active" {...props}>
-        {props.children}
-    </NavLink>
+const App = () => (
+    <div className="app">
+        <main className="ui container">
+            <Gallery />
+        </main>
+        <Footer />
+    </div>
 );
 
 const App = () => (

@@ -1,49 +1,7 @@
-.flex {
-    // min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-main.flex {
-    // flex: 1;
-    flex-grow: 1;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-footer.flex {
-    flex-shrink: 0;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    margin: 0px;
-}
-
-#app-menu {
-    display: none;
-}
-
 .ui.card {
     cursor: zoom-in;
 }
 
 .detail .ui.card {
     cursor: zoom-out;
-}
-
-.clock {
-    img {
-        transition: opacity 1s;
-    }
-    .sun {
-        width: 50px;
-        height: 50px;
-        display: none;
-        background: yellow;
-        position: absolute;
-        transition: left 1s linear;
-        transition: top 1s linear;
-    }
 }
