@@ -3,7 +3,7 @@ import LazyLoad from 'react-lazy-load';
 import { connect } from 'react-redux';
 import { setCurrentImage } from './data/actions.js';
 import { imageGroups, sortFunction } from './sorting';
-import { slugify, truncFloat } from './utils';
+import { slugify } from './utils';
 import { withImages } from './wrappers';
 
 export const ImageCard = ({ image, imageSize, onClick }) => (
@@ -25,11 +25,6 @@ export const ImageCard = ({ image, imageSize, onClick }) => (
                 Posted {image.timestamp.format('h:mm A, ddd MMM Do')}
             </div>
             <div className="meta">By {image.sender}</div>
-            {image.tideLevel && (
-                <div className="meta">
-                    Tide Level: {truncFloat(image.tideLevel)}m
-                </div>
-            )}
         </div>
     </div>
 );
