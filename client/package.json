@@ -10,7 +10,7 @@
         "start": "env API_SERVER_URL=\"$API_SERVER_URL\" poi"
     },
     "devDependencies": {
-        "node-sass": "^4.9.0",
+        "node-sass": "^4.13.1",
         "poi": "^10.2.9",
         "sass-loader": "^7.0.3"
     },
